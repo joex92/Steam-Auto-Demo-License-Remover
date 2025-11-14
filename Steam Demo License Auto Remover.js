@@ -69,13 +69,14 @@
             const removeLink = row.querySelector('a[href^="javascript:RemoveFreeLicense"]');
             if (removeLink) {
                 const cells = row.querySelectorAll('td');
-                const itemName = cells[1] ? cells[1].textContent.trim() : '未知游戏名';
+                const itemName = cells[1].innerText.split("\n")[1];
 
                 const href = removeLink.getAttribute('href');
                 const match = href.match(/RemoveFreeLicense\(\s*(\d+)\s*,/);
                 const packageId = match ? match[1] : null;
+                const isDemo = cells[1].innerText.search(/(\s|\()(demo|prologue)(?![a-z])/i) > -1;
 
-                if (packageId) {
+                if (packageId && isDemo) {
                     games.push({
                         packageId,
                         itemName,
