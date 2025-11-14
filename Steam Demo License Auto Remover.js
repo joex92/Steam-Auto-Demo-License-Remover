@@ -1,9 +1,9 @@
 // ==UserScript==
-// @name         STEAM 一键清库存 Steam Free License Auto Remover
+// @name         STEAM 一键清库存 Steam Demo License Auto Remover
 // @namespace    https://github.com/PeiqiLi-Github
-// @version      2.0
-// @description  改进：首次随机约1秒删除，触发84后改3~5分钟随机删除，失败重试，剩余时间更准确
-// @author       PeiqiLi + 
+// @version      1.0
+// @description  Improvements: Initial random deletion takes approximately 1 second; after triggering error 84, random deletion occurs every 3-5 minutes; retry on failure; remaining time is now more accurate.
+// @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
 // @grant        none
 // @license      MIT
