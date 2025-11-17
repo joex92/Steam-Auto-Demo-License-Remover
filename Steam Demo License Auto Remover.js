@@ -2,7 +2,7 @@
 // @name         STEAM 一键清库存 Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
 // @version      1.1
-// @description  Improvements: Initial random deletion takes approximately 1 second; after triggering error 84, random deletion occurs every 3-5 minutes; retry on failure; remaining time is now more accurate.
+// @description  Improvements: Initial random remove takes approximately 1 second; after triggering error 84, random remove occurs every 3-5 minutes; retry on failure; remaining time is now more accurate.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
 // @grant        none
@@ -60,10 +60,12 @@
 
         btn.addEventListener('click', () => {
             btn.disabled = true;
+            chk.disabled = true;
             statusDiv.textContent = '';
             startCleaning(statusDiv).then(() => {
                 statusDiv.textContent += '\n🎉 Completed！\n';
                 btn.disabled = false;
+                chk.disabled = false;
             });
         });
 
@@ -119,7 +121,7 @@
             });
 
             if (!response.ok) {
-                return { success: false, error: `HTTP状态 ${response.status}` };
+                return { success: false, error: `HTTP Status ${response.status}` };
             }
 
             const data = await response.json();
@@ -146,13 +148,13 @@
         const total = games.length;
 
         if (total === 0) {
-            statusDiv.textContent = '✅ No games found to be deleted。';
+            statusDiv.textContent = '✅ No games found to be removed。';
             return;
         }
 
         let hasError84 = false; 
 
-        statusDiv.textContent += `🚀 Automatic deletion of removable games has begun...\nA total of ${total} removable games were found.\n\n`;
+        statusDiv.textContent += `🚀 Automatic remove of ${chk.checked ? "demo" : "free"} games has begun...\nA total of ${total} removable ${chk.checked ? "demo" : "free"} games were found.\n\n`;
 
         for (let i = 0; i < total; ) { 
             const g = games[i];
@@ -164,8 +166,8 @@
             const remainingMinutes = Math.floor(remainingTimeMs / 60000);
             const remainingDays = (remainingMinutes / 1440).toFixed(2);
 
-            statusDiv.textContent += `🗑️ Deleting the game #${i + 1}：${g.itemName} (包ID: ${g.packageId})\n`;
-            statusDiv.textContent += `Process：${i} / ${total} (${((i / total)*100).toFixed(2)}%)\n`;
+            statusDiv.textContent += `🗑️ Removing game #${i + 1}：${g.itemName} (包ID: ${g.packageId})\n`;
+            statusDiv.textContent += `Removed：${i} / ${total} (${((i / total)*100).toFixed(2)}%)\n`;
             statusDiv.textContent += `Estimated remaining time：${remainingMinutes} minute(s) ≈ ${remainingDays} day(s)\n`;
 
             const result = await removeGame(g.packageId);
@@ -174,7 +176,7 @@
                 statusDiv.textContent += `✅ Successfully removed\n\n`;
                 i++;  
             } else {
-                statusDiv.textContent += `❌ Failed to remove. Reason：${result.error}\n\n`;
+                statusDiv.textContent += `❌ Failed to remove. Reason：\n\t${result.error}\n\n`;
                 if (result.code === 84) {
                     hasError84 = true;
                 }
