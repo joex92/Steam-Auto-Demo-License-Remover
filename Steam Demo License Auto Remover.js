@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         STEAM 一键清库存 Steam Demo License Auto Remover
-// @namespace    https://github.com/PeiqiLi-Github
+// @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
 // @version      1.1
 // @description  Improvements: Initial random deletion takes approximately 1 second; after triggering error 84, random deletion occurs every 3-5 minutes; retry on failure; remaining time is now more accurate.
 // @author       PeiqiLi + JoeX92
