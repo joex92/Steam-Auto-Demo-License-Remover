@@ -173,14 +173,16 @@
 
             const result = await removeGame(g.packageId);
             
-            hasError84 = false;
             if (result.success) {
                 statusDiv.textContent += `✅ Successfully removed\n\n`;
                 i++;
+                hasError84 = false;
             } else {
                 statusDiv.textContent += `❌ Failed to remove. Reason：\n\t${result.error}\n\n`;
                 if (result.code === 84) {
                     hasError84 = true;
+                } else {
+                    hasError84 = false;
                 }
             }
 
