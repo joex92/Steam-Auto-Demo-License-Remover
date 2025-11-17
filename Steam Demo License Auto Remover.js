@@ -167,7 +167,7 @@
             const remainingMinutes = Math.floor(remainingTimeMs / 60000);
             const remainingDays = (remainingMinutes / 1440).toFixed(2);
 
-            statusDiv.textContent += `🗑️ Removing game #${i + 1}：${g.itemName} (包ID: ${g.packageId})\n`;
+            statusDiv.textContent += `🗑️ Removing game #${i + 1}：${g.itemName} (Package ID: ${g.packageId})\n`;
             statusDiv.textContent += `Removed：${i} / ${total} (${((i / total)*100).toFixed(2)}%)\n`;
             statusDiv.textContent += `Estimated remaining time：${remainingMinutes} minute(s) ≈ ${remainingDays} day(s)\n`;
 
