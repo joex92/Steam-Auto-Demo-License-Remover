@@ -172,10 +172,11 @@
             statusDiv.textContent += `Estimated remaining time：${remainingMinutes} minute(s) ≈ ${remainingDays} day(s)\n`;
 
             const result = await removeGame(g.packageId);
-
+            
+            hasError84 = false;
             if (result.success) {
                 statusDiv.textContent += `✅ Successfully removed\n\n`;
-                i++;  
+                i++;
             } else {
                 statusDiv.textContent += `❌ Failed to remove. Reason：\n\t${result.error}\n\n`;
                 if (result.code === 84) {
