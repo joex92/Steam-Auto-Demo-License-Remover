@@ -186,7 +186,7 @@
             statusDiv.scrollTop = statusDiv.scrollHeight;
 
             if (i < total) {
-                const delay = hasError84 ? randomDelay(360000, 480000) : randomDelay(500, 1500);
+                const delay = hasError84 ? randomDelay(120000, 360000) : randomDelay(500, 1500);
                 statusDiv.textContent += `⏳ Waiting ${Math.floor(delay/1000)} seconds before continuing...\n\n`;
                 statusDiv.scrollTop = statusDiv.scrollHeight;
                 await sleep(delay);
