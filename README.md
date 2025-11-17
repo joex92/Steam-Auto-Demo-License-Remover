@@ -52,11 +52,12 @@ A5: No, only free licenses are removed, purchased games remain unaffected.
 
 ## Disclaimer
 
-This script is developed by PeiqiLi for personal use only. Use at your own risk. PeiqiLi is not responsible for any damage or loss caused. Please operate carefully.
+This script is developed by [PeiqiLi](https://github.com/PeiqiLi-Github) for personal use only. Use at your own risk. PeiqiLi is not responsible for any damage or loss caused. Please operate carefully.
 
 ---
 
-## 反馈 | Feedback
+## Feedback
 
-欢迎在 GitHub 提交 issues 或建议：  
-[https://github.com/PeiqiLi-Github/steam-auto-free-license-remover](https://github.com/PeiqiLi-Github/steam-auto-free-license-remover)
+You are welcome to submit issues or suggestions on GitHub:
+- [PeiqiLi's Github](https://github.com/PeiqiLi-Github/Steam-Auto-Free-License-Remover/issues)
+- [JoeX92's Github](https://github.com/joex92/Steam-Auto-Demo-License-Remover/issues)
