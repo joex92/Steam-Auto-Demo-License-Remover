@@ -15,12 +15,12 @@
     function insertButton() {
         const titleElem = document.querySelector('.page_content > h2');
         if (!titleElem) {
-            console.warn('找不到元素，请检查是否位于 https://store.steampowered.com/account/licenses/');
+            console.warn('Element not found，Please check if it is located at https://store.steampowered.com/account/licenses/');
             return;
         }
 
         const btn = document.createElement('button');
-        btn.textContent = '🧹开始清理';
+        btn.textContent = '🧹 Start cleaning';
         btn.style.backgroundColor = '#FFD700';
         btn.style.color = '#000';
         btn.style.border = 'none';
@@ -29,7 +29,24 @@
         btn.style.cursor = 'pointer';
         btn.style.borderRadius = '4px';
         btn.style.fontWeight = 'bold';
-
+/*
+        const chk = document.createElement('input');
+        chk.type = 'checkbox';
+        chk.name = 'option';
+        chk.value = 'selected';
+        
+        const chklbl = document.createElement('label');
+        chklbl.appendChild(document.createTextNode('Demo Titles Only'));
+        chklbl.appendChild(checkbox);
+        chklbl.style.backgroundColor = '#FFD700';
+        chklbl.style.color = '#000';
+        chklbl.style.border = 'none';
+        chklbl.style.padding = '5px 12px';
+        chklbl.style.marginLeft = '15px';
+        chklbl.style.cursor = 'pointer';
+        chklbl.style.borderRadius = '4px';
+        chklbl.style.fontWeight = 'bold';
+*/
         const statusDiv = document.createElement('pre');
         statusDiv.style.border = '1px solid #ccc';
         statusDiv.style.padding = '10px';
@@ -44,7 +61,7 @@
             btn.disabled = true;
             statusDiv.textContent = '';
             startCleaning(statusDiv).then(() => {
-                statusDiv.textContent += '\n🎉 所有操作完成！\n';
+                statusDiv.textContent += '\n🎉 Completed！\n';
                 btn.disabled = false;
             });
         });
@@ -61,7 +78,7 @@
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    function scanRemovableGames() {
+    function scanRemovableGames(noDemo = false) {
         const rows = document.querySelectorAll('.account_table tr');
         const games = [];
 
@@ -74,7 +91,7 @@
                 const href = removeLink.getAttribute('href');
                 const match = href.match(/RemoveFreeLicense\(\s*(\d+)\s*,/);
                 const packageId = match ? match[1] : null;
-                const isDemo = cells[1].innerText.search(/(\s|\()(demo|prologue)(?![a-z])/i) > -1;
+                const isDemo = (cells[1].innerText.search(/(\s|\()(demo|prologue)(?![a-z])/i) > -1) || noDemo;
 
                 if (packageId && isDemo) {
                     games.push({
@@ -107,13 +124,13 @@
             if (data.success === 1) {
                 return { success: true };
             } else {
-                let msg = `返回错误代码: ${data.success}`;
+                let msg = `Error code: ${data.success}`;
                 if (data.success === 2) {
-                    msg += '（操作受限，可能触发了限速，请稍后重试）';
+                    msg += '（Operation is restricted, which may have triggered a speed limit. Please try again later）';
                 } else if (data.success === 84) {
-                    msg += '（Steam 拒绝请求，可能限流或请求无效）';
+                    msg += '（Steam rejected the request; this may be due to rate limiting or an invalid request）';
                 } else if (data.success === 24) {
-                    msg += '（会话已失效，请重新登录）';
+                    msg += '（The session has expired. Please log in again）';
                 }
                 return { success: false, error: msg, code: data.success };
             }
@@ -127,13 +144,13 @@
         const total = games.length;
 
         if (total === 0) {
-            statusDiv.textContent = '✅ 没有找到可删除的游戏。';
+            statusDiv.textContent = '✅ No games found to be deleted。';
             return;
         }
 
         let hasError84 = false; 
 
-        statusDiv.textContent += `🚀 开始自动删除可删除游戏...\n共找到 ${total} 个可删除游戏\n\n`;
+        statusDiv.textContent += `🚀 Automatic deletion of removable games has begun...\nA total of ${total} removable games were found.\n\n`;
 
         for (let i = 0; i < total; ) { 
             const g = games[i];
@@ -145,17 +162,17 @@
             const remainingMinutes = Math.floor(remainingTimeMs / 60000);
             const remainingDays = (remainingMinutes / 1440).toFixed(2);
 
-            statusDiv.textContent += `🗑️ 正在删除第 ${i + 1} 个游戏：${g.itemName} (包ID: ${g.packageId})\n`;
-            statusDiv.textContent += `进度：${i} / ${total} (${((i / total)*100).toFixed(2)}%)\n`;
-            statusDiv.textContent += `预计剩余时间：${remainingMinutes} 分钟 ≈ ${remainingDays} 天\n`;
+            statusDiv.textContent += `🗑️ Deleting the game #${i + 1}：${g.itemName} (包ID: ${g.packageId})\n`;
+            statusDiv.textContent += `Process：${i} / ${total} (${((i / total)*100).toFixed(2)}%)\n`;
+            statusDiv.textContent += `Estimated remaining time：${remainingMinutes} minute(s) ≈ ${remainingDays} day(s)\n`;
 
             const result = await removeGame(g.packageId);
 
             if (result.success) {
-                statusDiv.textContent += `✅ 删除成功\n\n`;
+                statusDiv.textContent += `✅ Successfully removed\n\n`;
                 i++;  
             } else {
-                statusDiv.textContent += `❌ 删除失败，原因：${result.error}\n\n`;
+                statusDiv.textContent += `❌ Failed to remove. Reason：${result.error}\n\n`;
                 if (result.code === 84) {
                     hasError84 = true;
                 }
@@ -165,7 +182,7 @@
 
             if (i < total) {
                 const delay = hasError84 ? randomDelay(360000, 480000) : randomDelay(500, 1500);
-                statusDiv.textContent += `⏳ 等待 ${Math.floor(delay/1000)} 秒后继续...\n\n`;
+                statusDiv.textContent += `⏳ Waiting ${Math.floor(delay/1000)} seconds before continuing...\n\n`;
                 statusDiv.scrollTop = statusDiv.scrollHeight;
                 await sleep(delay);
             }
