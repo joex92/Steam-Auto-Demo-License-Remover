@@ -17,7 +17,7 @@
     function insertButton() {
         const titleElem = document.querySelector('.page_content > h2');
         if (!titleElem) {
-            console.warn('Element not found，Please check if it is located at https://store.steampowered.com/account/licenses/');
+            console.warn('Element not found，Please check if you are at https://store.steampowered.com/account/licenses/');
             return;
         }
 
