@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         STEAM 一键清库存 Steam Demo License Auto Remover
 // @namespace    https://github.com/PeiqiLi-Github
-// @version      1.0
+// @version      1.1
 // @description  Improvements: Initial random deletion takes approximately 1 second; after triggering error 84, random deletion occurs every 3-5 minutes; retry on failure; remaining time is now more accurate.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -12,6 +12,8 @@
 (function() {
     'use strict';
 
+    const chk = document.createElement('input');
+    
     function insertButton() {
         const titleElem = document.querySelector('.page_content > h2');
         if (!titleElem) {
@@ -29,15 +31,14 @@
         btn.style.cursor = 'pointer';
         btn.style.borderRadius = '4px';
         btn.style.fontWeight = 'bold';
-/*
-        const chk = document.createElement('input');
+                
+        const chklbl = document.createElement('label');
         chk.type = 'checkbox';
         chk.name = 'option';
         chk.value = 'selected';
-        
-        const chklbl = document.createElement('label');
-        chklbl.appendChild(document.createTextNode('Demo Titles Only'));
-        chklbl.appendChild(checkbox);
+        chk.checked = true;
+        chklbl.appendChild(chk);
+        chklbl.appendChild(document.createTextNode(' Demo Titles Only'));
         chklbl.style.backgroundColor = '#FFD700';
         chklbl.style.color = '#000';
         chklbl.style.border = 'none';
@@ -46,7 +47,7 @@
         chklbl.style.cursor = 'pointer';
         chklbl.style.borderRadius = '4px';
         chklbl.style.fontWeight = 'bold';
-*/
+        
         const statusDiv = document.createElement('pre');
         statusDiv.style.border = '1px solid #ccc';
         statusDiv.style.padding = '10px';
@@ -67,7 +68,8 @@
         });
 
         titleElem.parentNode.insertBefore(btn, titleElem.nextSibling);
-        titleElem.parentNode.insertBefore(statusDiv, btn.nextSibling);
+        titleElem.parentNode.insertBefore(chklbl, btn.nextSibling);
+        titleElem.parentNode.insertBefore(statusDiv, chklbl.nextSibling);
     }
 
     function sleep(ms) {
@@ -140,7 +142,7 @@
     }
 
     async function startCleaning(statusDiv) {
-        const games = scanRemovableGames();
+        const games = scanRemovableGames(!chk.checked);
         const total = games.length;
 
         if (total === 0) {
