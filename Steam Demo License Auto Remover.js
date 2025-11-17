@@ -5,6 +5,7 @@
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=steampowered.com
 // @grant        none
 // @license      MIT
 // ==/UserScript==
