@@ -154,9 +154,9 @@
         }
 
         let hasError84 = false; 
-        avgCount = 0;
-        avgSum = 0;
-        delay = 0.5;
+        let avgCount = 0;
+        let avgSum = 0;
+        let delay = 0.5;
 
         statusDiv.textContent += `🚀 Automatic remove of ${chk.checked ? "demo" : "free"} games has begun...\nA total of ${total} removable ${chk.checked ? "demo" : "free"} games were found.\n\n`;
 
