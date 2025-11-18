@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      1.5.2
+// @version      1.5.3
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -154,9 +154,9 @@
         }
 
         let hasError84 = false; 
-        let avgCount = 0;
+        let avgCount = 1;
         let avgSum = 0;
-        let delay = 0.5;
+        let delay = 500;
 
         statusDiv.textContent += `🚀 Automatic remove of ${chk.checked ? "demo" : "free"} games has begun...\nA total of ${total} removable ${chk.checked ? "demo" : "free"} games were found.\n\n`;
 
@@ -164,7 +164,6 @@
             const g = games[i];
             const remainingCount = total - i;
 
-            if ( delay > 1500 ) avgCount++;
             avgSum += delay;
             const avgDelay = avgSum / avgCount; // hasError84 ? 420000 : 1000;;
             const remainingTimeMs = remainingCount * avgDelay;
@@ -198,6 +197,8 @@
                 statusDiv.scrollTop = statusDiv.scrollHeight;
                 await sleep(delay);
             }
+            
+            if ( delay > 1500 ) avgCount++;
         }
     }
 
