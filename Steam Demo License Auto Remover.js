@@ -154,15 +154,19 @@
         }
 
         let hasError84 = false; 
+        avgCount = 0;
+        avgSum = 0;
+        delay = 0.5;
 
         statusDiv.textContent += `🚀 Automatic remove of ${chk.checked ? "demo" : "free"} games has begun...\nA total of ${total} removable ${chk.checked ? "demo" : "free"} games were found.\n\n`;
 
         for (let i = 0; i < total; ) { 
             const g = games[i];
             const remainingCount = total - i;
-
-     
-            const avgDelay = hasError84 ? 420000 : 1000;; 
+            
+            avgCount++;
+            avgSum += delay;
+            const avgDelay = avgSum / avgCount; // hasError84 ? 420000 : 1000;;
             const remainingTimeMs = remainingCount * avgDelay;
             const remainingMinutes = Math.floor(remainingTimeMs / 60000);
             const remainingDays = (remainingMinutes / 1440).toFixed(2);
@@ -189,7 +193,7 @@
             statusDiv.scrollTop = statusDiv.scrollHeight;
 
             if (i < total) {
-                const delay = hasError84 ? randomDelay(120000, 360000) : randomDelay(500, 1500);
+                delay = hasError84 ? randomDelay(120000, 360000) : randomDelay(500, 1500);
                 statusDiv.textContent += `⏳ Waiting ${Math.floor(delay/1000)} seconds before continuing...\n\n`;
                 statusDiv.scrollTop = statusDiv.scrollHeight;
                 await sleep(delay);
