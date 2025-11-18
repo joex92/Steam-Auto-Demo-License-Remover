@@ -194,7 +194,7 @@
 
             if (i < total) {
                 delay = hasError84 ? randomDelay(120000, 360000) : randomDelay(500, 1500);
-                statusDiv.textContent += `⏳ Waiting ${Math.floor(delay/1000)} seconds before continuing...\n\n`;
+                statusDiv.textContent += `⏳ Waiting ${(delay/1000).toFixed(2)} seconds before continuing...\n\n`;
                 statusDiv.scrollTop = statusDiv.scrollHeight;
                 await sleep(delay);
             }
