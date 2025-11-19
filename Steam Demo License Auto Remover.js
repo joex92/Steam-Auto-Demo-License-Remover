@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      1.5.3
+// @version      1.6
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -171,8 +171,6 @@
             const remainingDays = (remainingMinutes / 1440).toFixed(2);
 
             statusDiv.textContent += `🗑️ Removing game #${i + 1}：${g.itemName} (Package ID: ${g.packageId})\n`;
-            statusDiv.textContent += `Removed：${i} / ${total} (${((i / total)*100).toFixed(2)}%)\n`;
-            statusDiv.textContent += `Estimated remaining time：${remainingMinutes} minute(s) ≈ ${remainingDays} day(s)\n`;
 
             const result = await removeGame(g.packageId);
             
@@ -189,6 +187,8 @@
                 }
             }
 
+            statusDiv.textContent += `Removed：${i} / ${total} (${((i / total)*100).toFixed(2)}%)\n`;
+            statusDiv.textContent += `Estimated remaining time：${remainingMinutes} minute(s) ≈ ${remainingDays} day(s)\n`;
             statusDiv.scrollTop = statusDiv.scrollHeight;
 
             if (i < total) {
