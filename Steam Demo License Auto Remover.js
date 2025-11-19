@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      1.6.1
+// @version      1.6.2
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -164,12 +164,6 @@
             const g = games[i];
             const remainingCount = total - i;
 
-            avgSum += delay;
-            const avgDelay = avgSum / avgCount; // hasError84 ? 420000 : 1000;;
-            const remainingTimeMs = remainingCount * avgDelay;
-            const remainingMinutes = (remainingTimeMs / 60000).toFixed(2);
-            const remainingDays = (remainingMinutes / 1440).toFixed(2);
-
             statusDiv.textContent += `🗑️ Removing game #${i + 1}：${g.itemName} (Package ID: ${g.packageId})\n`;
 
             const result = await removeGame(g.packageId);
@@ -186,12 +180,17 @@
                     hasError84 = false;
                 }
             }
-
+            
             statusDiv.textContent += `Removed：${i} / ${total} (${((i / total)*100).toFixed(2)}%)\n`;
             statusDiv.scrollTop = statusDiv.scrollHeight;
 
             if (i < total) {
                 delay = hasError84 ? randomDelay(120000, 360000) : randomDelay(500, 1500);
+                avgSum += delay;
+                const avgDelay = avgSum / avgCount; // hasError84 ? 420000 : 1000;;
+                const remainingTimeMs = remainingCount * avgDelay;
+                const remainingMinutes = (remainingTimeMs / 60000).toFixed(2);
+                const remainingDays = (remainingMinutes / 1440).toFixed(2);
                 statusDiv.textContent += `Estimated remaining time：${remainingMinutes} minute(s) ≈ ${remainingDays} day(s)\n`;
                 statusDiv.textContent += `⏳ Waiting ${(delay/1000).toFixed(2)} seconds before continuing...\n\n`;
                 statusDiv.scrollTop = statusDiv.scrollHeight;
