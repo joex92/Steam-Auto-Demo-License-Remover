@@ -226,7 +226,8 @@
     async function startCleaning(statusDiv) {
         const games = scanRemovableGames(!chk.checked);
         const total = games.length;
-
+        console.log(`Removing ${total} games:`, games);
+        
         if (total === 0) {
             statusDiv.textContent = '✅ No games found to be removed。';
             return;
