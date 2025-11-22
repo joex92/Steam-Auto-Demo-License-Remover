@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      1.6.2
+// @version      2.0
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -13,6 +13,67 @@
 (function() {
     'use strict';
 
+    class SleepTimer {
+        constructor() {
+            this.timeoutId = null;
+            this.resolvePromise = null;
+            this.startTime = 0;
+            this.elapsed = 0;
+            
+            // Tracks the state: 'idle', 'running', 'completed', 'stopped'
+            this.status = 'idle'; 
+        }
+    
+        // --- Helper Getters ---
+        get isRunning() {
+            return this.status === 'running';
+        }
+    
+        get wasStopped() {
+            return this.status === 'stopped';
+        }
+    
+        // --- Methods ---
+        start(ms) {
+            if (this.timeoutId) this.stop();
+    
+            this.startTime = Date.now();
+            this.elapsed = 0;
+            this.status = 'running'; // <--- Set status to running
+    
+            return new Promise((resolve) => {
+                this.resolvePromise = resolve;
+                this.timeoutId = setTimeout(() => {
+                    this.elapsed = ms;
+                    this.status = 'completed'; // <--- Finished naturally
+                    resolve(false); 
+                    this._cleanup();
+                }, ms);
+            });
+        }
+    
+        stop() {
+            if (this.timeoutId) {
+                clearTimeout(this.timeoutId);
+                this.elapsed = Date.now() - this.startTime;
+                this.status = 'stopped'; // <--- Interrupted manually
+    
+                if (this.resolvePromise) {
+                    this.resolvePromise(true); 
+                }
+                
+                this._cleanup();
+                return true;
+            }
+            return false;
+        }
+    
+        _cleanup() {
+            this.timeoutId = null;
+            this.resolvePromise = null;
+        }
+    }
+    const timer = new SleepTimer();
     const chk = document.createElement('input');
     
     function insertButton() {
@@ -33,13 +94,13 @@
         btn.style.borderRadius = '4px';
         btn.style.fontWeight = 'bold';
                 
-        const chklbl = document.createElement('label');
+        const chklbl = document.createElement('button');
         chk.type = 'checkbox';
         chk.name = 'option';
         chk.value = 'selected';
         chk.checked = true;
+        chklbl.appendChild(document.createTextNode('📋 Demo Titles Only '));
         chklbl.appendChild(chk);
-        chklbl.appendChild(document.createTextNode(' Demo Titles Only'));
         chklbl.style.backgroundColor = '#FFD700';
         chklbl.style.color = '#000';
         chklbl.style.border = 'none';
@@ -60,23 +121,34 @@
         statusDiv.style.color = '#000';
 
         btn.addEventListener('click', () => {
-            btn.disabled = true;
-            chk.disabled = true;
-            statusDiv.textContent = '';
-            startCleaning(statusDiv).then(() => {
-                statusDiv.textContent += '\n🎉 Completed！\n';
-                btn.disabled = false;
-                chk.disabled = false;
-            });
+            // btn.disabled = true;
+            if ( btn.textContent === '🧹 Start cleaning' ) {
+                btn.textContent = '🚫 Stop cleaning';
+                chk.disabled = true;
+                chklbl.disabled = true;
+                statusDiv.textContent = '';
+                startCleaning(statusDiv).then(() => {
+                    if ( timer.wasStopped() ) {
+                        statusDiv.textContent += `\n❌ Cleaning stopped by user! \n`;
+                    } else {
+                        statusDiv.textContent += '\n✨ Completed！\n';
+                        // btn.disabled = false;
+                        chk.disabled = false;
+                        chklbl.disabled = false;
+                    }
+                    btn.textContent = '🧹 Start cleaning';
+                });
+            } else {
+                timer.stop();
+            }
+        });
+        chklbl.addEventListener('click', () => {
+            chk.checked = !chk.checked;
         });
 
         titleElem.parentNode.insertBefore(btn, titleElem.nextSibling);
         titleElem.parentNode.insertBefore(chklbl, btn.nextSibling);
         titleElem.parentNode.insertBefore(statusDiv, chklbl.nextSibling);
-    }
-
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
     }
 
     function randomDelay(min, max) {
@@ -192,11 +264,11 @@
                 const remainingMinutes = (remainingTimeMs / 60000).toFixed(2);
                 const remainingDays = (remainingMinutes / 1440).toFixed(2);
                 statusDiv.textContent += `Estimated remaining time：${remainingMinutes} minute(s) ≈ ${remainingDays} day(s)\n`;
-                statusDiv.textContent += `⏳ Waiting ${(delay/1000).toFixed(2)} seconds before continuing...\n\n`;
+                statusDiv.textContent += `⏳ Waiting ${(delay/1000).toFixed(2)} seconds before continuing...\n`;
                 statusDiv.scrollTop = statusDiv.scrollHeight;
-                await sleep(delay);
+                await timer.start(delay);
+                if ( timer.wasStopped() ) break;
             }
-            
             if ( delay > 1500 ) avgCount++;
         }
     }
