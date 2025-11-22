@@ -111,6 +111,7 @@
         chklbl.style.fontWeight = 'bold';
         
         const statusDiv = document.createElement('pre');
+        statusDiv.hidden = true;
         statusDiv.style.border = '1px solid #ccc';
         statusDiv.style.padding = '10px';
         statusDiv.style.marginTop = '10px';
@@ -126,6 +127,7 @@
                 btn.textContent = '🚫 Stop cleaning';
                 chk.disabled = true;
                 chklbl.disabled = true;
+                statusDiv.hidden = false;
                 statusDiv.textContent = '';
                 statusDiv.style.resize = 'vertical';
                 startCleaning(statusDiv).then(() => {
