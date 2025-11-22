@@ -248,11 +248,11 @@
             const result = await removeGame(g.packageId);
             
             if (result.success) {
-                statusDiv.textContent += `✅ Successfully removed\n\n`;
+                statusDiv.textContent += `✅ Successfully removed\n`;
                 i++;
                 hasError84 = false;
             } else {
-                statusDiv.textContent += `❌ Failed to remove. Reason：\n\t${result.error}\n\n`;
+                statusDiv.textContent += `❌ Failed to remove. Reason：\n\t${result.error}\n`;
                 if (result.code === 84) {
                     hasError84 = true;
                 } else {
@@ -270,8 +270,8 @@
                 const remainingTimeMs = remainingCount * avgDelay;
                 const remainingMinutes = (remainingTimeMs / 60000).toFixed(2);
                 const remainingDays = (remainingMinutes / 1440).toFixed(2);
-                statusDiv.textContent += `Estimated remaining time：${remainingMinutes} minute(s) ≈ ${remainingDays} day(s)\n`;
-                statusDiv.textContent += `⏳ Waiting ${(delay/1000).toFixed(2)} seconds before continuing...\n`;
+                statusDiv.textContent += `Estimated remaining time：${remainingMinutes} minute(s) ≈ ${remainingDays} day(s)\n\n`;
+                statusDiv.textContent += `⏳ Waiting ${(delay/1000).toFixed(2)} seconds before continuing...\n\n`;
                 statusDiv.scrollTop = statusDiv.scrollHeight;
                 await timer.start(delay);
                 if ( timer.wasStopped ) break;
