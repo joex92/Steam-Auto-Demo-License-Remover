@@ -139,7 +139,7 @@
                     btn.textContent = '🧹 Start cleaning';
                 });
             } else {
-                if ( timer.stop(); ) {
+                if ( timer.stop() ) {
                     chk.disabled = false;
                     chklbl.disabled = false;
                 }
