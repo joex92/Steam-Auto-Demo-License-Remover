@@ -175,7 +175,7 @@
                 const href = removeLink.getAttribute('href');
                 const match = href.match(/RemoveFreeLicense\(\s*(\d+)\s*,/);
                 const packageId = match ? match[1] : null;
-                const isDemo = (cells[1].innerText.search(/ \b(demo|prologue)\b /i> -1) || noDemo; // /(\s|\()(demo|prologue)(?![a-z])/i
+                const isDemo = (cells[1].innerText.search(/ \b(demo|prologue)\b /i) > -1) || noDemo; // /(\s|\()(demo|prologue)(?![a-z])/i
 
                 if (packageId && isDemo) {
                     games.push({
