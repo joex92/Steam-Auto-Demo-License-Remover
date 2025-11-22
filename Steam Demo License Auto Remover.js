@@ -129,7 +129,7 @@
                 chklbl.disabled = true;
                 statusDiv.textContent = '';
                 startCleaning(statusDiv).then(() => {
-                    if ( timer.wasStopped() ) {
+                    if ( timer.wasStopped ) {
                         statusDiv.textContent += `\n❌ Cleaning stopped by user! \n`;
                     } else {
                         statusDiv.textContent += '\n✨ Completed！\n';
