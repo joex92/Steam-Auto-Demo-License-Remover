@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      2.1
+// @version      2.2
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -269,7 +269,7 @@
                 statusDiv.textContent += `⏳ Waiting ${(delay/1000).toFixed(2)} seconds before continuing...\n`;
                 statusDiv.scrollTop = statusDiv.scrollHeight;
                 await timer.start(delay);
-                if ( timer.wasStopped() ) break;
+                if ( timer.wasStopped ) break;
             }
             if ( delay > 1500 ) avgCount++;
         }
