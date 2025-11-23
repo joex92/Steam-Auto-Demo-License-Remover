@@ -245,7 +245,7 @@
             if (data.success === 1) {
                 return { success: true };
             } else {
-                let msg = `\n\tError code:\n\t${data.success} `;
+                let msg = `\n\tError code:${data.success}\n\t`;
                 switch (data.success) {
                     // case 1:
         				// msg += '(OK)'; 
