@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      3.1.4
+// @version      3.1.5
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -147,10 +147,10 @@
 
         btn.addEventListener('click', () => {
             // btn.disabled = true;
+            statusDiv.hidden = false;
             if ( btn.textContent === '🧹 Start cleaning' ) {
                 btn.textContent = '🚫 Stop cleaning';
                 chklbl.hidden = true;
-                statusDiv.hidden = false;
                 statusDiv.textContent = '';
                 statusDiv.style.resize = 'vertical';
                 startCleaning(statusDiv).then(() => {
@@ -172,6 +172,7 @@
                     skipbtn.hidden = true;
                 }
             }
+            statusDiv.scrollTop = statusDiv.scrollHeight;
         });
         
         chklbl.addEventListener('click', () => {
