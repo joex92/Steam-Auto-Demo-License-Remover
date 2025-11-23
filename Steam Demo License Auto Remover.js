@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      3.0
+// @version      3.1
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -75,6 +75,8 @@
     const timer = new SleepTimer();
     const chk = document.createElement('input');
     let pkgOpt = {retry: false, skipped: false};
+    const retrybtn = document.createElement('button');
+    const skipbtn = document.createElement('button');
     function insertButton() {
         const titleElem = document.querySelector('.page_content > h2');
         if (!titleElem) {
@@ -110,7 +112,6 @@
         chklbl.style.borderRadius = '4px';
         chklbl.style.fontWeight = 'bold';
 
-        const retrybtn = document.createElement('button');
         retrybtn.hidden = true;
         retrybtn.textContent = '🔄 Retry';
         retrybtn.style.backgroundColor = '#FFD700';
@@ -122,7 +123,6 @@
         retrybtn.style.borderRadius = '4px';
         retrybtn.style.fontWeight = 'bold';
 
-        const skipbtn = document.createElement('button');
         skipbtn.hidden = true;
         skipbtn.textContent = '⏭️ Skip';
         skipbtn.style.backgroundColor = '#FFD700';
@@ -149,8 +149,7 @@
             // btn.disabled = true;
             if ( btn.textContent === '🧹 Start cleaning' ) {
                 btn.textContent = '🚫 Stop cleaning';
-                chk.hidden = true;
-                chklbl.disabled = true;
+                chklbl.hidden = true;
                 statusDiv.hidden = false;
                 statusDiv.textContent = '';
                 statusDiv.style.resize = 'vertical';
@@ -160,8 +159,7 @@
                     } else {
                         statusDiv.textContent += '\n✨ Completed！\n';
                         // btn.disabled = false;
-                        chk.hidden = false;
-                        chklbl.disabled = false;
+                        chklbl.hidden = false;
                         retrybtn.hidden = true;
                         skipbtn.hidden = true;
                     }
@@ -169,8 +167,7 @@
                 });
             } else {
                 if ( timer.stop() ) {
-                    chk.hidden = false;
-                    chklbl.disabled = false;
+                    chklbl.hidden = false;
                     retrybtn.hidden = true;
                     skipbtn.hidden = true;
                 }
