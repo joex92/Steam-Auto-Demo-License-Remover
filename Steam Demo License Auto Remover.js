@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      3.2.2
+// @version      3.2.3
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -738,8 +738,9 @@
                 const avgDelay = avgSum / avgCount; // hasError84 ? 420000 : 1000;;
                 const remainingTimeMs = remainingCount * avgDelay;
                 const remainingMinutes = (remainingTimeMs / 60000).toFixed(2);
-                const remainingDays = (remainingMinutes / 1440).toFixed(2);
-                statusDiv.textContent += `Estimated remaining time：${remainingMinutes} minute(s) ≈ ${remainingDays} day(s)\n\n`;
+                const remainingHours = (remainingMinutes / 60).toFixed(2);
+                const remainingDays = (remainingHours / 24).toFixed(2);
+                statusDiv.textContent += `Estimated remaining time：${remainingMinutes} minute(s) ≈ ${remainingHours} hour(s) ≈ ${remainingDays} day(s)\n\n`;
                 statusDiv.textContent += `⏳ Waiting ${(delay/1000).toFixed(2)} seconds before continuing...\n\n`;
                 statusDiv.scrollTop = statusDiv.scrollHeight;
                 await timer.start(delay);
