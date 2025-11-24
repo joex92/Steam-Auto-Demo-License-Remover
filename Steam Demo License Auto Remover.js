@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      3.7.2
+// @version      3.7.3
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -781,7 +781,7 @@
             statusDiv.scrollTop = statusDiv.scrollHeight;
 
             if (i < total) {
-                delay = hasError84 ? randomDelay(400000, 500000)/Math.max(retries,1) : randomDelay(500, 1500);
+                delay = hasError84 ? Math.pow( randomDelay( 400000, 500000 ), 1 + (( retries - 1 ) / 10 )) : randomDelay( 500, 1500 );
                 avgSum += delay;
                 const avgDelay = avgSum / avgCount; // hasError84 ? 420000 : 1000;;
                 const remainingTimeMs = remainingCount * avgDelay;
