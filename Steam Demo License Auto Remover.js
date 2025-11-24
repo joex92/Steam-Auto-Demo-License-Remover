@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      3.5.6
+// @version      3.5.7
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -13,6 +13,13 @@
 (function() {
     'use strict';
 
+    if (!Element.prototype.append) {
+        const msg = "[One-Click Steam Demo License Auto Remover] Browser not supported!";
+        console.error(msg);
+        alert(msg); // Optional: Let the user know visually
+        throw new Error(msg); // This kills the script execution immediately
+    }
+    
     class SleepTimer {
         constructor() {
             this.timeoutId = null;
@@ -741,7 +748,6 @@
             const g = games[i];
             const remainingCount = total - i;
 
-            statusDiv.append(`🗑️ Removing game #${i + 1}：`);
             const scrollToTitle = document.createElement('a');
             scrollToTitle.id = g.packageId;
             scrollToTitle.textContent = `${g.itemName} (Package ID: ${g.packageId})`;
@@ -750,8 +756,7 @@
                 ev.preventDefault();
                 g.removeLink.parentElement.parentElement.parentElement.scrollIntoView();
             });
-            statusDiv.appendChild(scrollToTitle);
-            statusDiv.append(` [Retries: ${retries}]\n`);
+            statusDiv.append(`🗑️ Removing game #${i + 1}：`, scrollToTitle, ` [Retries: ${retries}]\n`);
             
             const result = await removeGame(g.packageId);
             
