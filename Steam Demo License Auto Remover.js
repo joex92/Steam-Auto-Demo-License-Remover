@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      3.4.3
+// @version      3.5
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -84,16 +84,51 @@
             return;
         }
 
+        // 1. Create a new style element
+        const cleaningStyle = document.createElement("style");
+        
+        // 2. Define the rule
+        cleaningStyle.textContent = `
+            .cleaningButton {
+                backgroundColor: #FFD700;
+                color: #000;
+                border: none;
+                padding: 5px 12px;
+                margin-left: 15px;
+                cursor: pointer;
+                border-radius: 4px;
+                font-weight: bold;
+            }
+            #cleaningStatus {
+                border: 1px solid #ccc;
+                padding: 10px;
+                margin-top: 10px;
+                min-height: 3em;
+                max-height: ${Math.max(innerHeight - 300,300)}px;
+                overflow-y: auto;
+                white-space: pre-wrap;
+                background-color: #FFD700;
+                color: #000;
+                resize: vertical;
+            }
+            #cleaningStatus a {
+                color: blue;           /* Normal color */
+                text-decoration: none;
+                transition: color 0.3s ease; /* Optional: Makes the color change smooth */
+            }
+            #cleaningStatus a:hover {
+                color: red;            /* Color when mouse is over */
+                text-decoration: underline;
+                cursor: pointer;
+            }
+        `;
+        
+        // 3. Append it to the document head
+        document.head.appendChild(cleaningStyle);
+
         const btn = document.createElement('button');
         btn.textContent = '🧹 Start cleaning';
-        btn.style.backgroundColor = '#FFD700';
-        btn.style.color = '#000';
-        btn.style.border = 'none';
-        btn.style.padding = '5px 12px';
-        btn.style.marginLeft = '15px';
-        btn.style.cursor = 'pointer';
-        btn.style.borderRadius = '4px';
-        btn.style.fontWeight = 'bold';
+        btn.className = "cleaningButton";
                 
         const chklbl = document.createElement('button');
         chk.type = 'checkbox';
@@ -103,48 +138,19 @@
         chk.style.pointerEvents = 'none';
         chklbl.appendChild(document.createTextNode('📋 Demo Titles Only '));
         chklbl.appendChild(chk);
-        chklbl.style.backgroundColor = '#FFD700';
-        chklbl.style.color = '#000';
-        chklbl.style.border = 'none';
-        chklbl.style.padding = '5px 12px';
-        chklbl.style.marginLeft = '15px';
-        chklbl.style.cursor = 'pointer';
-        chklbl.style.borderRadius = '4px';
-        chklbl.style.fontWeight = 'bold';
+        chklbl.className = "cleaningButton";
 
         retrybtn.hidden = true;
         retrybtn.textContent = '🔄 Retry';
-        retrybtn.style.backgroundColor = '#FFD700';
-        retrybtn.style.color = '#000';
-        retrybtn.style.border = 'none';
-        retrybtn.style.padding = '5px 12px';
-        retrybtn.style.marginLeft = '15px';
-        retrybtn.style.cursor = 'pointer';
-        retrybtn.style.borderRadius = '4px';
-        retrybtn.style.fontWeight = 'bold';
+        retrybtn.className = "cleaningButton";
 
         skipbtn.hidden = true;
         skipbtn.textContent = '⏭️ Skip';
-        skipbtn.style.backgroundColor = '#FFD700';
-        skipbtn.style.color = '#000';
-        skipbtn.style.border = 'none';
-        skipbtn.style.padding = '5px 12px';
-        skipbtn.style.marginLeft = '15px';
-        skipbtn.style.cursor = 'pointer';
-        skipbtn.style.borderRadius = '4px';
-        skipbtn.style.fontWeight = 'bold';
+        skipbtn.className = "cleaningButton";
         
         const statusDiv = document.createElement('pre');
         statusDiv.hidden = true;
-        statusDiv.style.border = '1px solid #ccc';
-        statusDiv.style.padding = '10px';
-        statusDiv.style.marginTop = '10px';
-        statusDiv.style.minHeight = `3em`;
-        statusDiv.style.maxHeight = `${Math.max(innerHeight - 300,300)}px`;
-        statusDiv.style.overflowY = 'auto';
-        statusDiv.style.whiteSpace = 'pre-wrap';
-        statusDiv.style.backgroundColor = '#FFD700';
-        statusDiv.style.color = '#000';
+        statusDiv.id = "cleaningStatus";
 
         btn.addEventListener('click', () => {
             // btn.disabled = true;
@@ -153,7 +159,6 @@
                 btn.textContent = '🚫 Stop cleaning';
                 chklbl.hidden = true;
                 statusDiv.textContent = '';
-                statusDiv.style.resize = 'vertical';
                 startCleaning(statusDiv).then(() => {
                     if ( timer.wasStopped ) {
                         statusDiv.textContent += `\n❌ Cleaning stopped by user! \n`;
@@ -736,7 +741,10 @@
             const g = games[i];
             const remainingCount = total - i;
 
-            statusDiv.textContent += `🗑️ Removing game #${i + 1}：${g.itemName} (Package ID: ${g.packageId}) [Retries: ${retries}]\n`;
+            statusDiv.textContent += `🗑️ Removing game #${i + 1}：`;
+            const scrollToTitle = document.createElement('a');
+            scrollToLink.textContent = `${g.itemName} (Package ID: ${g.packageId})`;
+            statusDiv.textContent += ` [Retries: ${retries}]\n`;
             
             const result = await removeGame(g.packageId);
             
