@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      3.2.3
+// @version      3.3
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -197,6 +197,31 @@
         titleElem.parentNode.insertBefore(statusDiv, skipbtn.nextSibling);
     }
 
+    let wakeLock = null;
+
+    // 1. Call this function BEFORE your loop starts
+    async function requestWakeLock() {
+        if ('wakeLock' in navigator) {
+            try {
+                wakeLock = await navigator.wakeLock.request('screen');
+                console.log('Screen Wake Lock active: Screensaver disabled.');
+            } catch (err) {
+                console.error(`${err.name}, ${err.message}`);
+            }
+        } else {
+            console.log('Wake Lock API not supported in this browser.');
+        }
+    }
+    
+    // 2. Call this function AFTER your loop finishes
+    async function releaseWakeLock() {
+        if (wakeLock !== null) {
+            await wakeLock.release();
+            wakeLock = null;
+            console.log('Screen Wake Lock released.');
+        }
+    }
+    
     function randomDelay(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
@@ -686,6 +711,7 @@
     }
 
     async function startCleaning(statusDiv) {
+        await requestWakeLock();
         const games = scanRemovableGames(!chk.checked);
         const total = games.length;
         console.log(`Removing ${total} games:`, games);
@@ -755,6 +781,7 @@
             }
             if ( delay > 1500 ) avgCount++;
         }
+        await releaseWakeLock();
     }
 
     function waitForPage() {
