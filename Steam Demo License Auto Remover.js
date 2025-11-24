@@ -186,7 +186,7 @@
                 padding: 10px;
                 margin-top: 10px;
                 min-height: 3em;
-                max-height: ${ Math.max( innerHeight - document.querySelector(".page_content_ctn").getBoundingClientRect().top - 10, document.querySelector(".page_content_ctn").getBoundingClientRect().top - 12 ) }px;
+                max-height: ${ Math.max( innerHeight - document.querySelector(".page_content_ctn").getBoundingClientRect().top - 10, document.querySelector(".page_content_ctn").getBoundingClientRect().top - 15 ) }px;
                 overflow-y: auto;
                 white-space: pre-wrap;
                 background-color: #FFD700;
