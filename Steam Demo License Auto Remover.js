@@ -801,7 +801,7 @@
                     } else break;
                 }
             }
-            if ( delay > 1500 ) avgCount++;
+            avgCount++;
         }
         await releaseWakeLock();
     }
