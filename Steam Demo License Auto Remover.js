@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      3.7.3
+// @version      3.7.4
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -91,48 +91,6 @@
             return;
         }
 
-        // 1. Create a new style element
-        const cleaningStyle = document.createElement("style");
-        
-        // 2. Define the rule
-        cleaningStyle.textContent = `
-            .cleaningButton {
-                background-color: #FFD700;
-                color: #000;
-                border: none;
-                padding: 5px 12px;
-                margin-left: 15px;
-                cursor: pointer;
-                border-radius: 4px;
-                font-weight: bold;
-            }
-            #cleaningStatus {
-                border: 1px solid #ccc;
-                padding: 10px;
-                margin-top: 10px;
-                min-height: 3em;
-                max-height: ${Math.max(innerHeight - 320,320)}px;
-                overflow-y: auto;
-                white-space: pre-wrap;
-                background-color: #FFD700;
-                color: #000;
-                resize: vertical;
-            }
-            #cleaningStatus a {
-                color: blue;           /* Normal color */
-                text-decoration: none;
-                transition: color 0.3s ease; /* Optional: Makes the color change smooth */
-            }
-            #cleaningStatus a:hover {
-                color: red;            /* Color when mouse is over */
-                text-decoration: underline;
-                cursor: pointer;
-            }
-        `;
-        
-        // 3. Append it to the document head
-        document.head.appendChild(cleaningStyle);
-
         const btn = document.createElement('button');
         btn.textContent = '🧹 Start cleaning';
         btn.className = "cleaningButton";
@@ -207,6 +165,48 @@
         titleElem.parentNode.insertBefore(retrybtn, chklbl.nextSibling);
         titleElem.parentNode.insertBefore(skipbtn, retrybtn.nextSibling);
         titleElem.parentNode.insertBefore(statusDiv, skipbtn.nextSibling);
+
+        // 1. Create a new style element
+        const cleaningStyle = document.createElement("style");
+        
+        // 2. Define the rule
+        cleaningStyle.textContent = `
+            .cleaningButton {
+                background-color: #FFD700;
+                color: #000;
+                border: none;
+                padding: 5px 12px;
+                margin-left: 15px;
+                cursor: pointer;
+                border-radius: 4px;
+                font-weight: bold;
+            }
+            #cleaningStatus {
+                border: 1px solid #ccc;
+                padding: 10px;
+                margin-top: 10px;
+                min-height: 3em;
+                max-height: ${ Math.max( innerHeight - document.querySelector(".page_content_ctn").getBoundingClientRect().top - 10, document.querySelector(".page_content_ctn").getBoundingClientRect().top - 10 ) }px;
+                overflow-y: auto;
+                white-space: pre-wrap;
+                background-color: #FFD700;
+                color: #000;
+                resize: vertical;
+            }
+            #cleaningStatus a {
+                color: blue;           /* Normal color */
+                text-decoration: none;
+                transition: color 0.3s ease; /* Optional: Makes the color change smooth */
+            }
+            #cleaningStatus a:hover {
+                color: red;            /* Color when mouse is over */
+                text-decoration: underline;
+                cursor: pointer;
+            }
+        `;
+        
+        // 3. Append it to the document head
+        document.head.appendChild(cleaningStyle);
     }
 
     let wakeLock = null;
@@ -252,7 +252,8 @@
                 const match = href.match(/RemoveFreeLicense\(\s*(\d+)\s*,/);
                 const packageId = match ? match[1] : null;
                 const isDemo = (cells[1].innerText.search(/\b(free weekend|demo|prologue|trial|episode|alpha|beta|sample|part|trailer|демо|пролог|эпизод|альфа|бета|тест|пробная)\b|(体験|試用|デモ|ベータ|アルファ|序章|试玩|試玩|体验|體驗|演示|前編|前篇|체험|프롤로그|에피소드|알파|베타)(版|판)?|お試し/i) > -1) || noDemo; // /(\s|\()(demo|prologue)(?![a-z])/i
-
+                row.id = packageId;
+                
                 if (packageId && isDemo) {
                     games.push({
                         packageId,
@@ -751,7 +752,7 @@
             const scrollToTitle = document.createElement('a');
             scrollToTitle.id = g.packageId;
             scrollToTitle.textContent = `${g.itemName} (Package ID: ${g.packageId})`;
-            scrollToTitle.href = '#'; // Optional: Ensures it looks/acts like a link (pointer cursor)
+            scrollToTitle.href = `#${g.packageId}/`; // Optional: Ensures it looks/acts like a link (pointer cursor)
             scrollToTitle.addEventListener('click', (ev) => {
                 ev.preventDefault();
                 if ( g.removeLink.offsetParent ) g.removeLink.parentElement.parentElement.parentElement.scrollIntoView();
@@ -776,7 +777,7 @@
                 }
                 retries++;
             }
-            
+
             statusDiv.append(`Removed：${i} / ${total} (${((i / total)*100).toFixed(2)}%)\n`);
             statusDiv.scrollTop = statusDiv.scrollHeight;
 
