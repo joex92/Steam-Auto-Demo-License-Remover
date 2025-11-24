@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      3.6
+// @version      3.6.1
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -111,7 +111,7 @@
                 padding: 10px;
                 margin-top: 10px;
                 min-height: 3em;
-                max-height: ${Math.max(innerHeight - 300,300)}px;
+                max-height: ${Math.max(innerHeight - 320,320)}px;
                 overflow-y: auto;
                 white-space: pre-wrap;
                 background-color: #FFD700;
