@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      3.5.1
+// @version      3.5.2
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -90,7 +90,7 @@
         // 2. Define the rule
         cleaningStyle.textContent = `
             .cleaningButton {
-                backgroundColor: #FFD700;
+                background-color: #FFD700;
                 color: #000;
                 border: none;
                 padding: 5px 12px;
