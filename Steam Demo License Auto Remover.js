@@ -743,13 +743,13 @@
 
             statusDiv.innerHTML += `🗑️ Removing game #${i + 1}：`;
             const scrollToTitle = document.createElement('a');
-            statusDiv.appendChild(scrollToTitle);
             scrollToTitle.textContent = `${g.itemName} (Package ID: ${g.packageId})`;
             scrollToTitle.addEventListener('click', (ev) => {
                 ev.preventDefault();
                 console.log(ev,g.removeLink.parentElement.parentElement.parentElement);
                 g.removeLink.parentElement.parentElement.parentElement.scrollIntoView();
             });
+            statusDiv.appendChild(scrollToTitle);
             statusDiv.innerHTML += ` [Retries: ${retries}]\n`;
             
             const result = await removeGame(g.packageId);
