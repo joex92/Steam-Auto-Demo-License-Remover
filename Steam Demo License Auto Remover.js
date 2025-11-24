@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      3.5.5.2
+// @version      3.5.6
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -158,12 +158,12 @@
             if ( btn.textContent === '🧹 Start cleaning' ) {
                 btn.textContent = '🚫 Stop cleaning';
                 chklbl.hidden = true;
-                statusDiv.innerHTML = '';
+                statusDiv.textContent = '';
                 startCleaning(statusDiv).then(() => {
                     if ( timer.wasStopped ) {
-                        statusDiv.innerHTML += `\n❌ Cleaning stopped by user! \n`;
+                        statusDiv.append(`\n❌ Cleaning stopped by user! \n`);
                     } else {
-                        statusDiv.innerHTML += '\n✨ Completed！\n';
+                        statusDiv.append('\n✨ Completed！\n');
                         // btn.disabled = false;
                         chklbl.hidden = false;
                         retrybtn.hidden = true;
@@ -722,7 +722,7 @@
         console.log(`Removing ${total} games:`, games);
         
         if (total === 0) {
-            statusDiv.innerHTML = '✅ No games found to be removed。';
+            statusDiv.textContent = '✅ No games found to be removed。';
             return;
         }
 
@@ -732,7 +732,7 @@
         let delay = 500;
         let retries = 0;
 
-        statusDiv.innerHTML += `🚀 Automatic remove of ${chk.checked ? "demo" : "free"} games has begun...\nA total of ${total} removable ${chk.checked ? "demo" : "free"} games were found.\n\n`;
+        statusDiv.append(`🚀 Automatic remove of ${chk.checked ? "demo" : "free"} games has begun...\nA total of ${total} removable ${chk.checked ? "demo" : "free"} games were found.\n\n`);
 
         if ( retrybtn.hidden ) retrybtn.hidden = false;
         if ( skipbtn.hidden ) skipbtn.hidden = false;
@@ -741,27 +741,28 @@
             const g = games[i];
             const remainingCount = total - i;
 
-            statusDiv.innerHTML += `🗑️ Removing game #${i + 1}：`;
+            statusDiv.append(`🗑️ Removing game #${i + 1}：`);
             const scrollToTitle = document.createElement('a');
+            scrollToTitle.id = g.packageId;
             scrollToTitle.textContent = `${g.itemName} (Package ID: ${g.packageId})`;
+            scrollToTitle.href = '#'; // Optional: Ensures it looks/acts like a link (pointer cursor)
             scrollToTitle.addEventListener('click', (ev) => {
                 ev.preventDefault();
-                console.log(ev,g.removeLink.parentElement.parentElement.parentElement);
                 g.removeLink.parentElement.parentElement.parentElement.scrollIntoView();
             });
             statusDiv.appendChild(scrollToTitle);
-            statusDiv.innerHTML += ` [Retries: ${retries}]\n`;
+            statusDiv.append(` [Retries: ${retries}]\n`);
             
             const result = await removeGame(g.packageId);
             
             if (result.success) {
-                statusDiv.innerHTML += `✅ Successfully removed\n`;
+                statusDiv.append(`✅ Successfully removed\n`);
                 i++;
                 hasError84 = false;
                 retries = 0;
                 g.removeLink.parentElement.parentElement.parentElement.remove();
             } else {
-                statusDiv.innerHTML += `❌ Failed to remove. Reason：${result.error}\n`;
+                statusDiv.append(`❌ Failed to remove. Reason：${result.error}\n`);
                 if (result.code === 84) {
                     hasError84 = true;
                 } else {
@@ -770,7 +771,7 @@
                 retries++;
             }
             
-            statusDiv.innerHTML += `Removed：${i} / ${total} (${((i / total)*100).toFixed(2)}%)\n`;
+            statusDiv.append(`Removed：${i} / ${total} (${((i / total)*100).toFixed(2)}%)\n`);
             statusDiv.scrollTop = statusDiv.scrollHeight;
 
             if (i < total) {
@@ -781,8 +782,8 @@
                 const remainingMinutes = (remainingTimeMs / 60000).toFixed(2);
                 const remainingHours = (remainingMinutes / 60).toFixed(2);
                 const remainingDays = (remainingHours / 24).toFixed(2);
-                statusDiv.innerHTML += `Estimated remaining time：${remainingMinutes} minute(s) ≈ ${remainingHours} hour(s) ≈ ${remainingDays} day(s)\n\n`;
-                statusDiv.innerHTML += `⏳ Waiting ${(delay/1000).toFixed(2)} seconds before continuing...\n\n`;
+                statusDiv.append(`Estimated remaining time：${remainingMinutes} minute(s) ≈ ${remainingHours} hour(s) ≈ ${remainingDays} day(s)\n\n`);
+                statusDiv.append(`⏳ Waiting ${(delay/1000).toFixed(2)} seconds before continuing...\n\n`);
                 statusDiv.scrollTop = statusDiv.scrollHeight;
                 await timer.start(delay);
                 if ( timer.wasStopped ) { 
