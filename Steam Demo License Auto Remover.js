@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      3.7.6
+// @version      3.8
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -118,10 +118,10 @@
         statusDiv.id = "cleaningStatus";
 
         btn.addEventListener('click', () => {
-            // btn.disabled = true;
             statusDiv.hidden = false;
             if ( btn.textContent === '🧹 Start cleaning' ) {
-                btn.textContent = '🚫 Stop cleaning';
+                btn.disabled = true;
+                btn.textContent = '⌛ Scanning Titles...';
                 chklbl.hidden = true;
                 statusDiv.textContent = '';
                 startCleaning(statusDiv).then(() => {
@@ -727,10 +727,12 @@
         await requestWakeLock();
         const games = scanRemovableGames(!chk.checked);
         const total = games.length;
+
         console.log(`Removing ${total} games:`, games);
-        
+
         if (total === 0) {
             statusDiv.textContent = '✅ No games found to be removed。';
+            btn.disabled = false;
             return;
         }
 
@@ -744,6 +746,8 @@
 
         if ( retrybtn.hidden ) retrybtn.hidden = false;
         if ( skipbtn.hidden ) skipbtn.hidden = false;
+        btn.textContent = '🚫 Stop cleaning';
+        btn.disabled = false;
         
         for (let i = 0; i < total; ) { 
             const g = games[i];
