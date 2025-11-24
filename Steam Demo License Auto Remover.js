@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      3.8
+// @version      3.8.1
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -80,6 +80,7 @@
         }
     }
     const timer = new SleepTimer();
+    const btn = document.createElement('button');
     const chk = document.createElement('input');
     let pkgOpt = {retry: false, skipped: false};
     const retrybtn = document.createElement('button');
@@ -91,7 +92,6 @@
             return;
         }
 
-        const btn = document.createElement('button');
         btn.textContent = '🧹 Start cleaning';
         btn.className = "cleaningButton";
                 
@@ -252,9 +252,9 @@
                 const match = href.match(/RemoveFreeLicense\(\s*(\d+)\s*,/);
                 const packageId = match ? match[1] : null;
                 const isDemo = (cells[1].innerText.search(/\b(free weekend|demo|prologue|trial|episode|alpha|beta|sample|part|trailer|демо|пролог|эпизод|альфа|бета|тест|пробная)\b|(体験|試用|デモ|ベータ|アルファ|序章|试玩|試玩|体验|體驗|演示|前編|前篇|체험|프롤로그|에피소드|알파|베타)(版|판)?|お試し/i) > -1) || noDemo; // /(\s|\()(demo|prologue)(?![a-z])/i
-                row.id = packageId;
                 
                 if (packageId && isDemo) {
+                    row.id = packageId;
                     games.push({
                         packageId,
                         itemName,
