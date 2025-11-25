@@ -1,6 +1,8 @@
 # Steam Free License Auto Remover  
 （Steam One-Click Licence Cleaner）
 
+_This version is an implementation to add checkboxes to each title so you can check which ones you want to remove_
+
 ---
 
 ## Description
