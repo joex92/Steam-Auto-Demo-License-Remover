@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      3.8.1
+// @version      3.8.2
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -756,7 +756,7 @@
             const scrollToTitle = document.createElement('a');
             scrollToTitle.id = g.packageId;
             scrollToTitle.textContent = `${g.itemName} (Package ID: ${g.packageId})`;
-            scrollToTitle.href = `#${g.packageId}/`; // Optional: Ensures it looks/acts like a link (pointer cursor)
+            scrollToTitle.href = `#${g.packageId}`; // Optional: Ensures it looks/acts like a link (pointer cursor)
             scrollToTitle.addEventListener('click', (ev) => {
                 ev.preventDefault();
                 if ( g.removeLink.offsetParent ) g.removeLink.parentElement.parentElement.parentElement.scrollIntoView();
@@ -786,8 +786,7 @@
             statusDiv.scrollTop = statusDiv.scrollHeight;
 
             if (i < total) {
-                const rand84Delay = randomDelay( 400000, 500000 );
-                delay = hasError84 ? Math.pow( rand84Delay, 1 / ( 1 + (( retries - 1 ) / 10 ))) : randomDelay( 500, 1500 );
+                delay = hasError84 ? Math.pow( randomDelay( 360000, 480000 ), 1 / ( 1 + (( retries - 1 ) / 10 ))) : randomDelay( 500, 1500 );
                 avgSum += delay;
                 const avgDelay = avgSum / avgCount; // hasError84 ? 420000 : 1000;;
                 const remainingTimeMs = remainingCount * avgDelay;
