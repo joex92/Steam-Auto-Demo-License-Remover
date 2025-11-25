@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      4.0
+// @version      4.1
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -233,6 +233,7 @@
         
         // 3. Append it to the document head
         document.head.appendChild(cleaningStyle);
+        const titles = scanRemovableGames(!chk.checked);
     }
 
     let wakeLock = null;
