@@ -87,7 +87,6 @@
     const skipbtn = document.createElement('button');
     const rows = document.querySelectorAll('.account_table tr');
     const chkAll = document.createElement("input");
-    const itemHead = rows[0].childElements()[1];
     function insertButton() {
         const titleElem = document.querySelector('.page_content > h2');
         if (!titleElem) {
@@ -180,6 +179,8 @@
         chkAll.checked = false;
         chkAll.id = 'selectAll';
         chkAll.className = `selectTitle`;
+        
+        const itemHead = rows[0].childElements()[1];
         itemHead.insertBefore(chkAll,itemHead.childNodes[0]);
 
         chkAll.addEventListener('click', () => {
