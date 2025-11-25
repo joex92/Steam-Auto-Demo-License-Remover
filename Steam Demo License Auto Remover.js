@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      4.2
+// @version      4.3
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -13,7 +13,8 @@
 (function() {
     'use strict';
 
-    if (!Element.prototype.append) {
+    const rows = document.querySelectorAll('.account_table tr');
+    if (!Element.prototype.append || !rows) {
         const msg = "[One-Click Steam Demo License Auto Remover] Browser not supported!";
         console.error(msg);
         alert(msg); // Optional: Let the user know visually
@@ -85,7 +86,6 @@
     let pkgOpt = {retry: false, skipped: false};
     const retrybtn = document.createElement('button');
     const skipbtn = document.createElement('button');
-    const rows = document.querySelectorAll('.account_table tr');
     const chkAll = document.createElement("input");
     function insertButton() {
         const titleElem = document.querySelector('.page_content > h2');
