@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      3.9.2
+// @version      4.0
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -85,6 +85,9 @@
     let pkgOpt = {retry: false, skipped: false};
     const retrybtn = document.createElement('button');
     const skipbtn = document.createElement('button');
+    const rows = document.querySelectorAll('.account_table tr');
+    const chkAll = document.createElement("input");
+    const itemHead = rows[0].childElements()[1];
     function insertButton() {
         const titleElem = document.querySelector('.page_content > h2');
         if (!titleElem) {
@@ -101,7 +104,8 @@
         chk.value = 'selected';
         chk.checked = true;
         chk.style.pointerEvents = 'none';
-        chklbl.appendChild(document.createTextNode('📋 Demo Titles Only '));
+        chkAll.style.marginLeft = "1em";
+        chklbl.appendChild(document.createTextNode('📋 Demo Titles Only'));
         chklbl.appendChild(chk);
         chklbl.className = "cleaningButton";
 
@@ -134,6 +138,7 @@
                         retrybtn.hidden = true;
                         skipbtn.hidden = true;
                     }
+                    const titles = scanRemovableGames(!chk.checked,true);
                     btn.textContent = '🧹 Start cleaning';
                     statusDiv.scrollTop = statusDiv.scrollHeight;
                 });
@@ -148,6 +153,9 @@
         
         chklbl.addEventListener('click', () => {
             chk.checked = !chk.checked;
+            document.body.style.cursor = 'wait';
+            const titles = scanRemovableGames(!chk.checked);
+            document.body.style.cursor = '';
         });
         
         retrybtn.addEventListener('click', () => {
@@ -165,6 +173,20 @@
         titleElem.parentNode.insertBefore(retrybtn, chklbl.nextSibling);
         titleElem.parentNode.insertBefore(skipbtn, retrybtn.nextSibling);
         titleElem.parentNode.insertBefore(statusDiv, skipbtn.nextSibling);
+            
+        chkAll.type = 'checkbox';
+        chkAll.name = 'option';
+        chkAll.value = 'selected';
+        chkAll.checked = false;
+        chkAll.id = 'selectAll';
+        chkAll.className = `selectTitle`;
+        itemHead.insertBefore(chkAll,itemHead.childNodes[0]);
+
+        chkAll.addEventListener('click', () => {
+            document.body.style.cursor = 'wait';
+            const titles = scanRemovableGames(false,true,chkAll.checked);
+            document.body.style.cursor = '';
+        });
 
         // 1. Create a new style element
         const cleaningStyle = document.createElement("style");
@@ -203,6 +225,9 @@
                 text-decoration: underline;
                 cursor: pointer;
             }
+            .selectTitle {
+                margin-right: 1em;
+            }
         `;
         
         // 3. Append it to the document head
@@ -238,26 +263,39 @@
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    function scanRemovableGames(noDemo = false) {
-        const rows = document.querySelectorAll('.account_table tr');
+    function scanRemovableGames(noDemo = false, check = true, chkval = true) {
         const games = [];
-
+        
         rows.forEach(row => {
             const removeLink = row.querySelector('a[href^="javascript:RemoveFreeLicense"]');
             if (removeLink) {
                 const cells = row.querySelectorAll('td');
                 const itemName = cells[1].innerText.split("\n")[1];
-
+                const itemCheck = row.querySelector(".selectTitle") ?? document.createElement("input");
+                
                 const href = removeLink.getAttribute('href');
                 const match = href.match(/RemoveFreeLicense\(\s*(\d+)\s*,/);
                 const packageId = match ? match[1] : null;
                 const isDemo = (cells[1].innerText.search(/\b(free weekend|demo|prologue|trial|episode|alpha|beta|sample|part|trailer|демо|пролог|эпизод|альфа|бета|тест|пробная)\b|(体験|試用|デモ|ベータ|アルファ|序章|试玩|試玩|体验|體驗|演示|前編|前篇|체험|프롤로그|에피소드|알파|베타)(版|판)?|お試し/i) > -1) || noDemo; // /(\s|\()(demo|prologue)(?![a-z])/i
-                
-                if (packageId && isDemo) {
-                    row.id = packageId;
+                itemCheck.disabled = !check;
+                if ( itemCheck.type != 'checkbox' ){
+                    itemCheck.type = 'checkbox';
+                    itemCheck.name = 'option';
+                    itemCheck.value = 'selected';
+                    itemCheck.checked = false;
+                    itemCheck.id = `chk-${packageId}`;
+                    itemCheck.className = `selectTitle`;
+                    const item = row.childElements()[1];
+                    item.insertBefore(chkAll,item.childNodes[0]);
+                }
+
+                if ( ( packageId && isDemo ) || itemCheck.checked ) {
+                    if ( check ) itemCheck.checked = chkval;
+                    if ( row.id == '' ) row.id = packageId;
                     games.push({
                         packageId,
                         itemName,
+                        itemCheck,
                         removeLink
                     });
                 }
@@ -725,7 +763,7 @@
 
     async function startCleaning(statusDiv) {
         await requestWakeLock();
-        const games = scanRemovableGames(!chk.checked);
+        const games = scanRemovableGames(!chk.checked,false);
         const total = games.length;
 
         console.log(`Removing ${total} games:`, games);
