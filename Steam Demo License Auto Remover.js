@@ -104,7 +104,7 @@
         chk.value = 'selected';
         chk.checked = true;
         chk.style.pointerEvents = 'none';
-        chkAll.style.marginLeft = "1em";
+        chk.style.marginLeft = "1em";
         chklbl.appendChild(document.createTextNode('📋 Demo Titles Only'));
         chklbl.appendChild(chk);
         chklbl.className = "cleaningButton";
