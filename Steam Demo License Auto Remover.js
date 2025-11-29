@@ -911,12 +911,10 @@
         noDemoButton.className = 'btn btn-primary';
         window.onload = async (ev) => {
             const games2remove = JSON.parse(await GM.getValue("games2remove", "[]"));
-            console.log(games2remove,ev);
+            console.log("Removed Games:", games2remove);
             noDemoButton.appendChild(document.createTextNode('Ignore all Demo titles'));
             noDemoButton.appendChild(chk);
-            noDemoButton.addEventListener('click', () => {
-                chk.checked = !chk.checked;
-            }, { capture: true });
+            noDemoButton.addEventListener('click', () => { chk.checked = !chk.checked; }, { capture: true });
             activateButton.parentElement.appendChild(noDemoButton);
             activateButton.addEventListener('click', () => {
                 const originalText = activateButton.textContent;
