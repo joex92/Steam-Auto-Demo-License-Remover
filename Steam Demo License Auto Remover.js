@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      5.3
+// @version      5.5
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -23,6 +23,37 @@
     }
 
     const demoRegexp = /\b(free weekend|demo|prologue|trial|episode|chapter|alpha|beta|sample|part|trailer|демо|пролог|эпизод|альфа|бета|тест|пробная)\b|(体験|試用|デモ|ベータ|アルファ|序章|试玩|試玩|体验|體驗|演示|前編|前篇|체험|프롤로그|에피소드|알파|베타)(版|판)?|お試し/i;
+
+    /**
+     * Updates a stored array by merging new items (unique only).
+     * @param {string} storageKey - The name of the value (GM storage key).
+     * @param {Array} newItemsArray - The array to update with.
+     */
+    async function updateToStorage(storageKey, newItemsArray) {
+        // 1. GET: Retrieve existing string. Default to "[]" if empty.
+        let jsonString = await GM.getValue(storageKey, "[]");
+        
+        // 2. PARSE: Convert JSON string back to a real JavaScript Array
+        let currentList = [];
+        try {
+            currentList = JSON.parse(jsonString);
+            // Safety check: Ensure it's actually an array
+            if (!Array.isArray(currentList)) currentList = [];
+        } catch (e) {
+            console.error(`Error parsing stored array for ${storageKey}:`, e);
+            currentList = [];
+        }
+
+        // 3. MODIFY: Unique Merge (Prevents duplicates)
+        // This creates a Set from both arrays to remove duplicates, then turns it back into an array
+        let uniqueSet = new Set([...currentList, ...newItemsArray]);
+        let updatedList = Array.from(uniqueSet);
+
+        console.log(`[${storageKey}] Old size: ${currentList.length} | New size: ${updatedList.length}`);
+
+        // 4. SAVE: Stringify and save back to storage
+        return await GM.setValue(storageKey, JSON.stringify(updatedList));
+    }
     
     class SleepTimer {
         constructor() {
@@ -730,7 +761,7 @@
         async function startCleaning(statusDiv) {
             await requestWakeLock();
             const games = scanRemovableGames(!chk.checked);
-            console.log(await GM.setValue("games2remove", JSON.stringify(games)));
+            console.log(updateToStorage("games2remove", games));
             const total = games.length;
     
             console.log(`Removing ${total} games:`, games);
