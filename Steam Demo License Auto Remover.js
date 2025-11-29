@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      5.2
+// @version      5.3
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -254,14 +254,15 @@
                     const href = removeLink.getAttribute('href');
                     const match = href.match(/RemoveFreeLicense\(\s*(\d+)\s*,/);
                     const packageId = match ? match[1] : null;
-                    const isDemo = (cells[1].innerText.search(demoRegexp) > -1) || noDemo; // /(\s|\()(demo|prologue)(?![a-z])/i
+                    const isDemo = (cells[1].innerText.search(demoRegexp) > -1); // /(\s|\()(demo|prologue)(?![a-z])/i
                     
-                    if (packageId && isDemo) {
+                    if (packageId && ( isDemo || noDemo )) {
                         row.id = packageId;
                         games.push({
                             packageId,
                             itemName,
-                            removeLink
+                            removeLink,
+                            isDemo
                         });
                     }
                 }
@@ -839,7 +840,10 @@
         function ignoreDemoTitles(extra = []) {
             const packages = document.querySelectorAll('.package');
             const games = [];
-            const removedIds = new Set(extra.map(item => String(item.packageId)));
+            const removedIds = new Set(extra
+                                       .filter(item => item.isDemo)          // 1. Keep only items where isDemo is true
+                                       .map(item => String(item.packageId))  // 2. Extract the IDs from those items
+                                       );
             
             for ( const [i, p] of packages.entries() ) {
                 const removeLink = p.querySelector(".js-remove");
