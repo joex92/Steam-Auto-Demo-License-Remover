@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      5.7
+// @version      5.8
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -21,9 +21,32 @@
         alert(msg); // Optional: Let the user know visually
         throw new Error(msg); // This kills the script execution immediately
     }
-
-    const demoRegexp = /\b(free weekend|demo|prologue|trial|episode|chapter|alpha|beta|sample|part|trailer|демо|пролог|эпизод|альфа|бета|тест|пробная)\b|(体験|試用|デモ|ベータ|アルファ|序章|试玩|試玩|体验|體驗|演示|前編|前篇|체험|프롤로그|에피소드|알파|베타)(版|판)?|お試し/i;
-
+    // DEMO 1. Western (English/Russian) - Requires \b boundaries
+    let demoWestern = [
+        "free weekend", "demo", "prologue", "trial", "episode", "chapter",
+        "alpha", "beta", "sample", "part", "trailer", "playtest",
+        "preview", "benchmark", "teaser",
+        "демо", "пролог", "эпизод", "альфа", "бета", "тест",
+        "пробная", "тизер", "плейтест", "ознакомительная"
+    ];
+    
+    // DEMO 2. Asian Roots (CJK) - No boundaries needed
+    const demoAsianRoots = [
+        "体験", "試用", "デモ", "ベータ", "アルファ", "序章", // Jap
+        "テスト", "プレイテスト", "見本", "予告", "先行", // Jap New
+        "试玩", "試玩", "体验", "體驗", "演示", // Chi
+        "测试", "測試", "预告", "預告", // Chi New
+        "前編", "前篇", // Jap/Chi
+        "체험", "프롤로그", "에피소드", "알파", "베타", // Kor
+        "테스트", "티저", "맛보기" // Kor New
+    ];
+    
+    // DEMO 3. Suffixes (Version, Chapter, Edition)
+    const demoSuffixes = "(版|판|編|篇)?";
+    
+    // DEMO 4. Standalone Exceptions
+    const demoExceptions = "|お試し";
+    
     /**
      * Updates a stored array by merging new items (unique only).
      * @param {string} storageKey - The name of the value (GM storage key).
@@ -293,6 +316,8 @@
                     const href = removeLink.getAttribute('href');
                     const match = href.match(/RemoveFreeLicense\(\s*(\d+)\s*,/);
                     const packageId = match ? match[1] : null;
+                    const pattern = `\\b(${demoWestern.join("|")})\\b|(${demoAsianRoots.join("|")})${demoSuffixes}${demoExceptions}`;
+                    const demoRegexp = new RegExp(pattern, "i");
                     const isDemo = (cells[1].innerText.search(demoRegexp) > -1); // /(\s|\()(demo|prologue)(?![a-z])/i
                     
                     if (packageId && ( isDemo || noDemo )) {
@@ -890,6 +915,8 @@
                 if (removeLink) {
                     const name = p.childNodes[p.childNodes.length-1].textContent;
                     const isRemoved = removedIds.has(packageId.textContent.trim());
+                    const pattern = `\\b(${demoWestern.join("|")})\\b|(${demoAsianRoots.join("|")})${demoSuffixes}${demoExceptions}`;
+                    const demoRegexp = new RegExp(pattern, "i");
                     const isDemo = name.search(demoRegexp) > -1;
                     if (isDemo || isRemoved) {
                         games.push(name);
