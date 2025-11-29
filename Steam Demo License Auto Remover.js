@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      5.6
+// @version      5.6.1
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -910,7 +910,7 @@
         const noDemoButton = document.createElement("button");
         noDemoButton.className = 'btn btn-primary';
         window.onload = async (ev) => {
-            window.games2remove = JSON.parse(await GM.getValue("games2remove", "[]"));
+            const games2remove = JSON.parse(await GM.getValue("games2remove", "[]"));
             console.log(games2remove,ev);
             noDemoButton.appendChild(document.createTextNode('Ignore all Demo titles'));
             noDemoButton.appendChild(chk);
@@ -923,7 +923,7 @@
                 if ( chk.checked ) {
                     noDemoButton.disabled = true;
                     activateButton.textContent = `⌛ Ignoring Demo/Prologue Titles`;
-                    const titles = ignoreDemoTitles();
+                    const titles = ignoreDemoTitles(games2remove);
                     console.log("Ignored Titles:", titles);
                     noDemoButton.disabled = false;
                     activateButton.textContent = originalText;
