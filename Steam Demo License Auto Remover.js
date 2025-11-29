@@ -727,7 +727,7 @@
     async function startCleaning(statusDiv) {
         await requestWakeLock();
         const games = scanRemovableGames(!chk.checked);
-        console.log("Setting Variable:", await GM.setValue("games2remove", JSON.stringify(games)));
+        console.log(await GM.setValue("games2remove", JSON.stringify(games)));
         const total = games.length;
 
         console.log(`Removing ${total} games:`, games);
