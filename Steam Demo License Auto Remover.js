@@ -30,8 +30,6 @@
      * @param {Array} newItemsArray - The array to update with.
      */
     async function updateToStorage(storageKey, newItemsArray, key = "packageId") {
-        console.time("Storage Update"); // Start timer for performance debugging
-
         // 1. GET (Async): Doesn't block the UI while fetching data
         let jsonString = await GM.getValue(storageKey, "[]");
         
@@ -62,9 +60,7 @@
         console.log(`[${storageKey}] Final count: ${combinedList.length}`);
 
         // 3. SAVE (Async)
-        await GM.setValue(storageKey, JSON.stringify(newItemsArray));
-        
-        console.timeEnd("Storage Update");
+        return await GM.setValue(storageKey, JSON.stringify(newItemsArray));
     }
     
     class SleepTimer {
