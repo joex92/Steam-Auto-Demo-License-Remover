@@ -52,7 +52,7 @@
         console.log(`[${storageKey}] Old size: ${currentList.length} | New size: ${updatedList.length}`);
 
         // 4. SAVE: Stringify and save back to storage
-        return await GM.setValue(storageKey, JSON.stringify(updatedList));
+        return await GM.setValue(storageKey, JSON.stringify(newItemsArray));
     }
     
     class SleepTimer {
