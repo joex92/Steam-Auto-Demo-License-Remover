@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      5.9
+// @version      5.10
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -174,6 +174,7 @@
     if ( location.host.match('store.steampowered.com') ) {
         const btn = document.createElement('button');
         const chk = document.createElement('input');
+        const sch = document.createElement('input');
         let pkgOpt = {retry: false, skipped: false};
         const retrybtn = document.createElement('button');
         const skipbtn = document.createElement('button');
@@ -256,7 +257,8 @@
             titleElem.parentNode.insertBefore(chklbl, btn.nextSibling);
             titleElem.parentNode.insertBefore(retrybtn, chklbl.nextSibling);
             titleElem.parentNode.insertBefore(skipbtn, retrybtn.nextSibling);
-            titleElem.parentNode.insertBefore(statusDiv, skipbtn.nextSibling);
+            titleElem.parentNode.insertBefore(sch, skipbtn.nextSibling);
+            titleElem.parentNode.insertBefore(statusDiv, sch.nextSibling);
     
             // 1. Create a new style element
             const cleaningStyle = document.createElement("style");
@@ -318,11 +320,11 @@
                     const href = removeLink.getAttribute('href');
                     const match = href.match(/RemoveFreeLicense\(\s*(\d+)\s*,/);
                     const packageId = match ? match[1] : null;
-                    const pattern = `\\b(${demoWesternKeywords.join("|")})\\b|(${demoAsianKeywords.join("|")})(${demoAsianSuffixes.join("|")})?`;
+                    const pattern = noDemo ? `.*` : `\\b(${demoWesternKeywords.join("|")})\\b|(${demoAsianKeywords.join("|")})(${demoAsianSuffixes.join("|")})?`;
                     const demoRegexp = new RegExp(pattern, "i");
                     const isDemo = (cells[1].innerText.search(demoRegexp) > -1); // /(\s|\()(demo|prologue)(?![a-z])/i
                     
-                    if (packageId && ( isDemo || noDemo )) {
+                    if ( packageId && isDemo ) {
                         row.id = packageId;
                         games.push({
                             packageId,
