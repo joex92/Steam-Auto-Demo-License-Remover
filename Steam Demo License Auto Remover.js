@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      5.5
+// @version      5.6
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -29,30 +29,42 @@
      * @param {string} storageKey - The name of the value (GM storage key).
      * @param {Array} newItemsArray - The array to update with.
      */
-    async function updateToStorage(storageKey, newItemsArray) {
-        // 1. GET: Retrieve existing string. Default to "[]" if empty.
+    async function updateToStorage(storageKey, newItemsArray, key = "packageId") {
+        console.time("Storage Update"); // Start timer for performance debugging
+
+        // 1. GET (Async): Doesn't block the UI while fetching data
         let jsonString = await GM.getValue(storageKey, "[]");
         
-        // 2. PARSE: Convert JSON string back to a real JavaScript Array
         let currentList = [];
         try {
             currentList = JSON.parse(jsonString);
-            // Safety check: Ensure it's actually an array
             if (!Array.isArray(currentList)) currentList = [];
         } catch (e) {
-            console.error(`Error parsing stored array for ${storageKey}:`, e);
             currentList = [];
         }
 
-        // 3. MODIFY: Unique Merge (Prevents duplicates)
-        // This creates a Set from both arrays to remove duplicates, then turns it back into an array
-        let uniqueSet = new Set([...currentList, ...newItemsArray]);
-        let updatedList = Array.from(uniqueSet);
+        // 2. OPTIMIZED MERGE (Map based on packageId)
+        // This runs in O(N) time and is much faster than stringifying objects.
+        let itemMap = new Map();
+        
+        // Load existing items
+        for (let item of currentList) {
+            if (item && item.packageId) itemMap.set(item[key], item);
+        }
+        
+        // Add/Overwrite with new items
+        for (let item of newItemsArray) {
+            if (item && item.packageId) itemMap.set(item[key], item);
+        }
+        
+        let combinedList = Array.from(itemMap.values());
 
-        console.log(`[${storageKey}] Old size: ${currentList.length} | New size: ${updatedList.length}`);
+        console.log(`[${storageKey}] Final count: ${combinedList.length}`);
 
-        // 4. SAVE: Stringify and save back to storage
-        return await GM.setValue(storageKey, JSON.stringify(updatedList));
+        // 3. SAVE (Async)
+        await GM.setValue(storageKey, JSON.stringify(newItemsArray));
+        
+        console.timeEnd("Storage Update");
     }
     
     class SleepTimer {
@@ -902,7 +914,7 @@
         const noDemoButton = document.createElement("button");
         noDemoButton.className = 'btn btn-primary';
         window.onload = async (ev) => {
-            window.games2remove = JSON.parse(await GM.getValue("games2remove", "{}"));
+            window.games2remove = JSON.parse(await GM.getValue("games2remove", "[]"));
             console.log(games2remove,ev);
             noDemoButton.appendChild(document.createTextNode('Ignore all Demo titles'));
             noDemoButton.appendChild(chk);
