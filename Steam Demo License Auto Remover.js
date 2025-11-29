@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      5.0
+// @version      5.2
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -21,6 +21,8 @@
         alert(msg); // Optional: Let the user know visually
         throw new Error(msg); // This kills the script execution immediately
     }
+
+    const demoRegexp = /\b(free weekend|demo|prologue|trial|episode|chapter|alpha|beta|sample|part|trailer|демо|пролог|эпизод|альфа|бета|тест|пробная)\b|(体験|試用|デモ|ベータ|アルファ|序章|试玩|試玩|体验|體驗|演示|前編|前篇|체험|프롤로그|에피소드|알파|베타)(版|판)?|お試し/i;
     
     class SleepTimer {
         constructor() {
@@ -252,7 +254,7 @@
                     const href = removeLink.getAttribute('href');
                     const match = href.match(/RemoveFreeLicense\(\s*(\d+)\s*,/);
                     const packageId = match ? match[1] : null;
-                    const isDemo = (cells[1].innerText.search(/\b(free weekend|demo|prologue|trial|episode|chapter|alpha|beta|sample|part|trailer|демо|пролог|эпизод|альфа|бета|тест|пробная)\b|(体験|試用|デモ|ベータ|アルファ|序章|试玩|試玩|体验|體驗|演示|前編|前篇|체험|프롤로그|에피소드|알파|베타)(版|판)?|お試し/i) > -1) || noDemo; // /(\s|\()(demo|prologue)(?![a-z])/i
+                    const isDemo = (cells[1].innerText.search(demoRegexp) > -1) || noDemo; // /(\s|\()(demo|prologue)(?![a-z])/i
                     
                     if (packageId && isDemo) {
                         row.id = packageId;
@@ -834,16 +836,19 @@
             insertButton();
         });
     } else if (location.host.match('steamdb.info')) {
-        function ignoreDemoTitles() {
+        function ignoreDemoTitles(extra = []) {
             const packages = document.querySelectorAll('.package');
             const games = [];
-    
+            const removedIds = new Set(extra.map(item => String(item.packageId)));
+            
             for ( const [i, p] of packages.entries() ) {
                 const removeLink = p.querySelector(".js-remove");
+                const packageId = p.querySelector(".tabular-nums");
                 if (removeLink) {
                     const name = p.childNodes[p.childNodes.length-1].textContent;
-                    const isDemo = (name.search(/\b(free weekend|demo|prologue|trial|episode|chapter|alpha|beta|sample|part|trailer|демо|пролог|эпизод|альфа|бета|тест|пробная)\b|(体験|試用|デモ|ベータ|アルファ|序章|试玩|試玩|体验|體驗|演示|前編|前篇|체험|프롤로그|에피소드|알파|베타)(版|판)?|お試し/i) > -1);
-                    if (isDemo) {
+                    const isRemoved = removedIds.has(packageId.textContent.trim());
+                    const isDemo = name.search(demoRegexp) > -1;
+                    if (isDemo || isRemoved) {
                         games.push(name);
                         removeLink.click();
                     }
