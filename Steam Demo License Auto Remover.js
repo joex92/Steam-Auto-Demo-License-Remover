@@ -60,7 +60,7 @@
         console.log(`[${storageKey}] Final count: ${combinedList.length}`);
 
         // 3. SAVE (Async)
-        return await GM.setValue(storageKey, JSON.stringify(newItemsArray));
+        return await GM.setValue(storageKey, JSON.stringify(combinedList));
     }
     
     class SleepTimer {
