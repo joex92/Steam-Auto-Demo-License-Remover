@@ -1030,7 +1030,7 @@
         noDemoButton.className = 'btn btn-primary';
         window.onload = async (ev) => {
             console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
-            noDemoButton.appendChild(document.createTextNode('Ignore all Demo titles'));
+            noDemoButton.appendChild(document.createTextNode('Ignore all Demo packages'));
             // noDemoButton.appendChild(chk);
             // noDemoButton.addEventListener('click', () => { chk.checked = !chk.checked; }, { capture: true });
             activateButton.parentElement.appendChild(noDemoButton);
