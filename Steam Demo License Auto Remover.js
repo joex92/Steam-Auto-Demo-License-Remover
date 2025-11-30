@@ -66,8 +66,9 @@
      * @param {string} storageKey - The name of the value (GM storage key).
      * @param {Array} newItemsArray - The array to update with.
      * @param {string} key - The key to compare for duplicates.
+     * @param {boolean} reset - Reset the value with the new array.
      */
-    async function updateToStorage(storageKey, newItemsArray, key = "packageId", reset = false) {
+    async function updateArrayToStorage(storageKey, newItemsArray, key = "packageId", reset = false) {
         // 1. GET (Async): Doesn't block the UI while fetching data
         let jsonString = await GM.getValue(storageKey, "[]");
         
@@ -194,7 +195,7 @@
         let pkgOpt = {retry: false, skipped: false};
         const retrybtn = document.createElement('button');
         const skipbtn = document.createElement('button');
-        function insertButton() {
+        async function insertButton() {
             const titleElem = document.querySelector('.page_content > h2');
             if (!titleElem) {
                 console.warn('Element not found，Please check if you are at https://store.steampowered.com/account/licenses/');
@@ -215,6 +216,7 @@
             chklbl.className = "cleaningButton cleaningContainer";
             
             sch.placeholder = "Words separated by commas ('-' negates). e.g.: free, -chapter";
+            sch.value = JSON.parse(await GM.getValue("customFilter", "[]")).join(", ");
             sch.className = "cleaningText cleaningContainer";
             
             const schchklbl = document.createElement('button');
@@ -361,10 +363,11 @@
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
     
-        function scanRemovableGames(noDemo = false, customOnly = false) {
+        async function scanRemovableGames(noDemo = false, customOnly = false) {
             const rows = document.querySelectorAll('.account_table tr');
             const games = [];
             const customKeywords = sch.value.trim() ? sch.value.trim().replace(/^[`'"]|[`'"]$/g, '').split(/\s*['"]?\s*[,，、]\s*['"]?\s*/) : [];
+            console.log(await updateArrayToStorage("customFilter", customKeywords, "length", true));
             const customAllowed = [];
             const customNotAllowed = [];
             // 2. Sort terms
@@ -872,7 +875,7 @@
         async function startCleaning(statusDiv) {
             await requestWakeLock();
             const games = scanRemovableGames(!chk.checked,schchk.checked);
-            console.log(updateToStorage("games2remove", games, "packageId", chkGMreset.checked));
+            console.log(updateArrayToStorage("games2remove", games, "packageId", chkGMreset.checked));
             const total = games.length;
     
             console.log(`Removing ${total} games:`, games);
@@ -975,8 +978,8 @@
             });
         }
     
-        waitForPage().then(() => {
-            insertButton();
+        waitForPage().then(async () => {
+            await insertButton();
         });
     } else if (location.host.match('steamdb.info')) { ////////////////////////////////////////////////////////////////////////////////////////////////////
         function ignoreDemoTitles(extra = []) {
