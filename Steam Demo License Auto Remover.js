@@ -93,6 +93,9 @@
         
         let combinedList = Array.from(itemMap.values());
 
+        console.log(gmReset.checked ? `Resetting ${storageKey} Value:` : `Updating ${storageKey} Value:`, 
+                    gmReset.checked ? newItemsArray : combinedList);
+        
         // 3. SAVE (Async)
         if ( gmReset.checked ) return await GM.setValue(storageKey, JSON.stringify(newItemsArray));
         else return await GM.setValue(storageKey, JSON.stringify(combinedList));
