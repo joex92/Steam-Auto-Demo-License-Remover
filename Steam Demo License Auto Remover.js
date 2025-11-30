@@ -933,7 +933,7 @@
                 statusDiv.scrollTop = statusDiv.scrollHeight;
     
                 if (i < total) {
-                    delay = hasError84 ? Math.max( Math.pow( randomDelay( 390000, 510000 ), 1 / ( 1 + ( ( retries - 1 ) / 10 ) ) ), 10000 ) : randomDelay( 500, 1500 );
+                    delay = hasError84 ? Math.max( Math.pow( randomDelay( 390000, 510000 ), 1 / ( 1 + ( ( retries - 1 ) / 10 ) ) ), randomDelay( 30000, 90000 ) ) : randomDelay( 500, 1500 );
                     avgSum += delay;
                     const avgDelay = avgSum / avgCount; // hasError84 ? 420000 : 1000;;
                     const remainingTimeMs = remainingCount * avgDelay;
