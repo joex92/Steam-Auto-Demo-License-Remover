@@ -992,10 +992,14 @@
                 const packageId = p.querySelector(".tabular-nums");
                 if (removeLink) {
                     const name = p.childNodes[p.childNodes.length-1].textContent;
-                    const isRemoved = removedIds.has(packageId.textContent.trim());
+                    const id = packageId.textContent;
+                    const isRemoved = removedIds.has(id.trim());
                     const isDemo = name.search(demoRegexp) > -1;
                     if (isDemo || isRemoved) {
-                        games.push(name);
+                        games.push({
+                            id,
+                            name
+                        });
                         removeLink.click();
                     }
                 }
