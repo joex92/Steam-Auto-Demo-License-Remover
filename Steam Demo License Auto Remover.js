@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      6.5
+// @version      6.6
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -203,7 +203,7 @@
             chklbl.appendChild(chk);
             chklbl.className = "cleaningButton";
             
-            sch.placeholder = "Words separated by commas. e.g.: free, soundtrack";
+            sch.placeholder = "Words separated by commas ('-' negates). e.g.: free, -chapter";
             sch.className = "cleaningText";
             const schchklbl = document.createElement('button');
             schchk.type = 'checkbox';
@@ -365,6 +365,7 @@
                     customAllowed.push(term);
                 }
             });
+            const customNegateOnly = ( customAllowed.length == 0 ) && ( customNotAllowed.length > 0 );
             const customPattern = ( customNotAllowed.length || customAllowed.length ) ? 
                 `^${ customNotAllowed.length ? 
                     ( "(?!.*\b" + customNotAllowed.join("|") + "\b)" ) : 
@@ -386,7 +387,7 @@
                     const isCustom = cells[1].innerText.search(customRegexp) > -1;
                     const isDemo = cells[1].innerText.search(demoRegexp) > -1; // /(\s|\()(demo|prologue)(?![a-z])/i
                     
-                    if ( packageId && ( ( !customOnly && ( noDemo || isDemo ) ) || isCustom ) ) {
+                    if ( packageId && ( ( !customOnly && ( noDemo || isDemo ) ) && ( isCustom || !customNegateOnly ) ) ) {
                         row.id = packageId;
                         games.push({
                             packageId,
