@@ -1005,7 +1005,7 @@
                     const name = p.childNodes[p.childNodes.length-1].textContent;
                     const id = packageId.textContent;
                     const isRemoved = removedIds.has(id.trim());
-                    const isCustom = iname.trim().search(customFilter.regExp) > -1;
+                    const isCustom = name.trim().search(customFilter.regExp) > -1;
                     const isDemo = name.trim().search(demoRegexp) > -1;
                     if ( ( isDemo || isRemoved ) && ( isCustom || !customFilter.negateOnly ) ) {
                         games.push({
