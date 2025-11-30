@@ -202,8 +202,18 @@
             chklbl.appendChild(document.createTextNode('📋 Demo Titles Only '));
             chklbl.appendChild(chk);
             chklbl.className = "cleaningButton";
+            
             sch.placeholder = "Words separated by commas. e.g.: free, soundtrack";
             sch.className = "cleaningText";
+            const schchklbl = document.createElement('button');
+            schchk.type = 'checkbox';
+            schchk.name = 'option';
+            schchk.value = 'selected';
+            schchk.checked = true;
+            schchk.style.pointerEvents = 'none';
+            schchklbl.appendChild(document.createTextNode('📋 Custom Words Only '));
+            schchklbl.appendChild(schchk);
+            schchklbl.className = "cleaningButton";
     
             retrybtn.hidden = true;
             retrybtn.textContent = '🔄 Retry';
@@ -221,9 +231,10 @@
                 statusDiv.hidden = false;
                 if ( btn.textContent === '🧹 Start cleaning' ) {
                     btn.disabled = true;
-                    sch.disabled = true;
+                    sch.hidden = true;
                     btn.textContent = '⌛ Scanning Titles...';
                     chklbl.hidden = true;
+                    schchklbl.hidden = true;
                     statusDiv.textContent = '';
                     startCleaning(statusDiv).then(() => {
                         if ( timer.wasStopped ) {
@@ -231,8 +242,9 @@
                         } else {
                             statusDiv.append('\n✨ Completed！\n');
                             // btn.disabled = false;
-                            sch.disabled = false;
+                            sch.hidden = false;
                             chklbl.hidden = false;
+                            schchklbl.hidden = false;
                             retrybtn.hidden = true;
                             skipbtn.hidden = true;
                         }
@@ -241,8 +253,9 @@
                     });
                 } else {
                     if ( timer.stop() ) {
-                        sch.disabled = false;
+                        sch.hidden = false;
                         chklbl.hidden = false;
+                        schchklbl.hidden = false;
                         retrybtn.hidden = true;
                         skipbtn.hidden = true;
                     }
@@ -268,6 +281,7 @@
             titleElem.parentNode.insertBefore(retrybtn, chklbl.nextSibling);
             titleElem.parentNode.insertBefore(skipbtn, retrybtn.nextSibling);
             titleElem.parentNode.insertBefore(sch, skipbtn.nextSibling);
+            titleElem.parentNode.insertBefore(schchklbl, sch.nextSibling);
             titleElem.parentNode.insertBefore(statusDiv, sch.nextSibling);
     
             // 1. Create a new style element
