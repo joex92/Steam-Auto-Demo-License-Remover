@@ -59,6 +59,7 @@
      * @param {Array} newItemsArray - The array to update with.
      */
     const gmReset = document.createElement('input');
+    gmReset.id = 'resetGMvar';
     gmReset.type = 'checkbox';
     gmReset.name = 'option';
     gmReset.value = 'selected';
@@ -184,7 +185,7 @@
     }
     const timer = new SleepTimer();
     
-    if ( location.host.match('store.steampowered.com') ) {
+    if ( location.host.match('store.steampowered.com') ) { ////////////////////////////////////////////////////////////////////////////////////////////////////
         const btn = document.createElement('button');
         const chk = document.createElement('input');
         const sch = document.createElement('input');
@@ -932,7 +933,7 @@
                 statusDiv.scrollTop = statusDiv.scrollHeight;
     
                 if (i < total) {
-                    delay = hasError84 ? Math.max( Math.pow( randomDelay( 390000, 510000 ), 1 / ( 1 + ( ( retries - 1 ) / 10 ) ) ), 2000 ) : randomDelay( 500, 1500 );
+                    delay = hasError84 ? Math.max( Math.pow( randomDelay( 390000, 510000 ), 1 / ( 1 + ( ( retries - 1 ) / 10 ) ) ), 10000 ) : randomDelay( 500, 1500 );
                     avgSum += delay;
                     const avgDelay = avgSum / avgCount; // hasError84 ? 420000 : 1000;;
                     const remainingTimeMs = remainingCount * avgDelay;
@@ -976,7 +977,7 @@
         waitForPage().then(() => {
             insertButton();
         });
-    } else if (location.host.match('steamdb.info')) {
+    } else if (location.host.match('steamdb.info')) { ////////////////////////////////////////////////////////////////////////////////////////////////////
         function ignoreDemoTitles(extra = []) {
             const packages = document.querySelectorAll('.package');
             const games = [];
