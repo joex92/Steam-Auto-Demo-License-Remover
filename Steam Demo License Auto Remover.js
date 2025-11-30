@@ -378,9 +378,9 @@
             const customNegateOnly = ( customAllowed.length == 0 ) && ( customNotAllowed.length > 0 );
             const customPattern = ( customNotAllowed.length || customAllowed.length ) ? 
                 `^${ customNotAllowed.length ? 
-                    ( `(?!.*\b${customNotAllowed.join("|")}\b)` ) : 
+                    ( `(?!.*\\b${customNotAllowed.join("|")}\\b)` ) : 
                     "" }(?=.*${customAllowed.length ? 
-                               (`\b${customAllowed.join("|")}\b` ) : 
+                               (`\\b${customAllowed.join("|")}\\b` ) : 
                                ""})` : 
                 `(?!)` ;
             const customRegexp = new RegExp(customPattern, "i");
