@@ -89,7 +89,7 @@
         console.log(`[${storageKey}] Final count: ${combinedList.length}`);
 
         // 3. SAVE (Async)
-        if ( window.resetStorage ) return await GM.setValue(storageKey, JSON.stringify(newItemsArray));
+        if ( window.resetGM_value ) return await GM.setValue(storageKey, JSON.stringify(newItemsArray));
         else return await GM.setValue(storageKey, JSON.stringify(combinedList));
     }
     
