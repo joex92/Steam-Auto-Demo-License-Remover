@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      6.4
+// @version      6.5
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -23,10 +23,10 @@
     }
     
     // DEMO 1. Western (English/Russian) - Requires \b boundaries
-    const demoWesternKeywords = [// Western
+    const demoWesternKeywords = [// "ost", "soundtrack",
         "free weekend", "demo", "prologue", "trial", "episode", "chapter",
         "alpha", "beta", "sample", "part", "trailer", "playtest",
-        "preview", "benchmark", "teaser", "ost", "soundtrack",
+        "preview", "benchmark", "teaser",
         // Russian
         "демо", "пролог", "эпизод", "альфа", "бета", "тест",
         "пробная", "тизер", "плейтест", "ознакомительная"
@@ -354,6 +354,25 @@
         function scanRemovableGames(noDemo = false, customOnly = false) {
             const rows = document.querySelectorAll('.account_table tr');
             const games = [];
+            const customKeywords = sch.value.trim() ? sch.value.trim().replace(/^[`'"]|[`'"]$/g, '').split(/\s*['"]?\s*[,，、]\s*['"]?\s*/) : [];
+            const customAllowed = [];
+            const customNotAllowed = [];
+            // 2. Sort terms
+            customKeywords.forEach(term => {
+                if (term.startsWith("-")) {
+                    customNotAllowed.push(term.substring(1));
+                } else {
+                    customAllowed.push(term);
+                }
+            });
+            const customPattern = ( customNotAllowed.length || customAllowed.length ) ? 
+                `^${ customNotAllowed.length ? 
+                    ( "(?!.*\b" + customNotAllowed.join("|") + "\b)" ) : 
+                    "" }(?=.*\b${customAllowed.length ? 
+                                 customAllowed.join("|") : 
+                                 ""}\b)` : 
+                `(?!)` ;
+            const customRegexp = new RegExp(customPattern, "i");
     
             rows.forEach(row => {
                 const removeLink = row.querySelector('a[href^="javascript:RemoveFreeLicense"]');
@@ -364,9 +383,6 @@
                     const href = removeLink.getAttribute('href');
                     const match = href.match(/RemoveFreeLicense\(\s*(\d+)\s*,/);
                     const packageId = match ? match[1] : null;
-                    const customKeywords = sch.value.trim() ? sch.value.trim().replace(/^[`'"]|[`'"]$/g, '').split(/\s*['"]?\s*[,，、]\s*['"]?\s*/) : [];
-                    const customPattern = customKeywords.length ? `\\b(${customKeywords.join("|")})\\b` : `^$` ;
-                    const customRegexp = new RegExp(customPattern, "i");
                     const isCustom = cells[1].innerText.search(customRegexp) > -1;
                     const isDemo = cells[1].innerText.search(demoRegexp) > -1; // /(\s|\()(demo|prologue)(?![a-z])/i
                     
