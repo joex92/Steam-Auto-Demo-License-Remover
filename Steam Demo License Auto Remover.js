@@ -379,9 +379,9 @@
             const customPattern = ( customNotAllowed.length || customAllowed.length ) ? 
                 `^${ customNotAllowed.length ? 
                     ( "(?!.*\b" + customNotAllowed.join("|") + "\b)" ) : 
-                    "" }(?=.*\b${customAllowed.length ? 
-                                 customAllowed.join("|") : 
-                                 ""}\b)` : 
+                    "" }(?=.*${customAllowed.length ? 
+                               ("\b" + customAllowed.join("|") + "\b" ) : 
+                               ""})` : 
                 `(?!)` ;
             const customRegexp = new RegExp(customPattern, "i");
     
