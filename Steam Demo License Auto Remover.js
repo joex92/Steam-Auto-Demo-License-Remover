@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      6.6.3
+// @version      6.6.4
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -58,6 +58,13 @@
      * @param {string} storageKey - The name of the value (GM storage key).
      * @param {Array} newItemsArray - The array to update with.
      */
+    const gmReset = document.createElement('input');
+    gmReset.type = 'checkbox';
+    gmReset.name = 'option';
+    gmReset.value = 'selected';
+    gmReset.checked = false;
+    gmReset.hidden = true;
+    gmReset.className = "cleaningButton";
     async function updateToStorage(storageKey, newItemsArray, key = "packageId") {
         // 1. GET (Async): Doesn't block the UI while fetching data
         let jsonString = await GM.getValue(storageKey, "[]");
@@ -86,10 +93,8 @@
         
         let combinedList = Array.from(itemMap.values());
 
-        console.log(`[${storageKey}] Final count: ${combinedList.length}`);
-
         // 3. SAVE (Async)
-        if ( window.resetGM_value ) return await GM.setValue(storageKey, JSON.stringify(newItemsArray));
+        if ( gmReset.checked ) return await GM.setValue(storageKey, JSON.stringify(newItemsArray));
         else return await GM.setValue(storageKey, JSON.stringify(combinedList));
     }
     
@@ -283,6 +288,7 @@
 
             const divContainer = document.createElement("div");
             divContainer.style.display = 'flex';
+            divContainer.append(gmReset);
             divContainer.append(btn);
             divContainer.append(chklbl);
             divContainer.append(retrybtn);
