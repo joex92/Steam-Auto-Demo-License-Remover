@@ -874,7 +874,7 @@
     
         async function startCleaning(statusDiv) {
             await requestWakeLock();
-            const games = scanRemovableGames(!chk.checked,schchk.checked);
+            const games = await scanRemovableGames(!chk.checked,schchk.checked);
             console.log(updateArrayToStorage("games2remove", games, "packageId", chkGMreset.checked));
             const total = games.length;
     
