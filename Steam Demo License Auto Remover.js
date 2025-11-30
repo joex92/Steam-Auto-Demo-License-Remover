@@ -302,7 +302,7 @@
                     border: none;
                     padding: 5px 12px;
                     margin-left: 10px;
-                    margin-rigth: 10px;
+                    margin-right: 10px;
                     cursor: pointer;
                     border-radius: 4px;
                     font-weight: bold;
@@ -315,7 +315,7 @@
                     border: none;
                     padding: 5px 12px;
                     margin-left: 10px;
-                    margin-rigth: 10px;
+                    margin-right: 10px;
                     cursor: text;
                     border-radius: 4px;
                     font-weight: bold;
