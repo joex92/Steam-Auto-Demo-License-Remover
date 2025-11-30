@@ -54,6 +54,8 @@
     const demoRegexp = new RegExp(demoPattern, "i");
 
     function customRegExp(customKeywords = []) {
+        if (!Array.isArray(customKeywords)) return {negateOnly: false, regExp: new RegExp(`(?!)`, "i");};
+    
         const customAllowed = [];
         const customNotAllowed = [];
         // 2. Sort terms
@@ -994,7 +996,7 @@
                                        .filter(item => item.isDemo)          // 1. Keep only items where isDemo is true
                                        .map(item => String(item.packageId))  // 2. Extract the IDs from those items
                                        );
-            const customFilter = customRegExp(JSON.parse(await GM.getValue("customFilter", "[]")).join(", "));
+            const customFilter = customRegExp(JSON.parse(await GM.getValue("customFilter", "[]")));
             
             for ( const [i, p] of packages.entries() ) {
                 const removeLink = p.querySelector(".js-remove");
