@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      5.10
+// @version      6.0
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -23,7 +23,8 @@
     }
     
     // DEMO 1. Western (English/Russian) - Requires \b boundaries
-    let demoWesternKeywords = ["free weekend", "demo", "prologue", "trial", "episode", "chapter",
+    const demoWesternKeywords = [// Western
+        "free weekend", "demo", "prologue", "trial", "episode", "chapter",
         "alpha", "beta", "sample", "part", "trailer", "playtest",
         "preview", "benchmark", "teaser", "ost", "soundtrack",
         // Russian
@@ -49,6 +50,9 @@
         "版", "판", "編", "篇"
     ];
     
+    const demoPattern = `\\b(${demoWesternKeywords.join("|")})\\b|(${demoAsianKeywords.join("|")})(${demoAsianSuffixes.join("|")})?`;
+    const demoRegexp = new RegExp(demoPattern, "i");
+
     /**
      * Updates a stored array by merging new items (unique only).
      * @param {string} storageKey - The name of the value (GM storage key).
@@ -175,6 +179,7 @@
         const btn = document.createElement('button');
         const chk = document.createElement('input');
         const sch = document.createElement('input');
+        const schchk = document.createElement('input');
         let pkgOpt = {retry: false, skipped: false};
         const retrybtn = document.createElement('button');
         const skipbtn = document.createElement('button');
@@ -197,6 +202,8 @@
             chklbl.appendChild(document.createTextNode('📋 Demo Titles Only '));
             chklbl.appendChild(chk);
             chklbl.className = "cleaningButton";
+            sch.placeholder = "Words separated by commas. e.g.: free, soundtrack";
+            sch.className = "cleaningText";
     
             retrybtn.hidden = true;
             retrybtn.textContent = '🔄 Retry';
@@ -214,6 +221,7 @@
                 statusDiv.hidden = false;
                 if ( btn.textContent === '🧹 Start cleaning' ) {
                     btn.disabled = true;
+                    sch.disabled = true;
                     btn.textContent = '⌛ Scanning Titles...';
                     chklbl.hidden = true;
                     statusDiv.textContent = '';
@@ -223,6 +231,7 @@
                         } else {
                             statusDiv.append('\n✨ Completed！\n');
                             // btn.disabled = false;
+                            sch.disabled = false;
                             chklbl.hidden = false;
                             retrybtn.hidden = true;
                             skipbtn.hidden = true;
@@ -232,6 +241,7 @@
                     });
                 } else {
                     if ( timer.stop() ) {
+                        sch.disabled = false;
                         chklbl.hidden = false;
                         retrybtn.hidden = true;
                         skipbtn.hidden = true;
@@ -275,12 +285,22 @@
                     border-radius: 4px;
                     font-weight: bold;
                 }
+                .cleaningText {
+                    background-color: #FFD7AF;
+                    color: #000;
+                    border: none;
+                    padding: 5px 12px;
+                    margin-left: 15px;
+                    cursor: text;
+                    border-radius: 4px;
+                    font-weight: bold;
+                }
                 #cleaningStatus {
                     border: 1px solid #ccc;
                     padding: 10px;
                     margin-top: 10px;
                     min-height: 3em;
-                    max-height: ${ Math.max( innerHeight - document.querySelector(".page_content_ctn").getBoundingClientRect().top - 10, document.querySelector(".page_content_ctn").getBoundingClientRect().top - 15 ) }px;
+                    max-height: ${ Math.max( innerHeight - document.querySelector(".page_content_ctn").getBoundingClientRect().top - 10, document.querySelector(".page_content_ctn").getBoundingClientRect().top - 30 ) }px;
                     overflow-y: auto;
                     white-space: pre-wrap;
                     background-color: #FFD700;
@@ -307,7 +327,7 @@
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
     
-        function scanRemovableGames(noDemo = false) {
+        function scanRemovableGames(noDemo = false, customOnly = false) {
             const rows = document.querySelectorAll('.account_table tr');
             const games = [];
     
@@ -320,16 +340,19 @@
                     const href = removeLink.getAttribute('href');
                     const match = href.match(/RemoveFreeLicense\(\s*(\d+)\s*,/);
                     const packageId = match ? match[1] : null;
-                    const pattern = noDemo ? `.*` : `\\b(${demoWesternKeywords.join("|")})\\b|(${demoAsianKeywords.join("|")})(${demoAsianSuffixes.join("|")})?`;
-                    const demoRegexp = new RegExp(pattern, "i");
-                    const isDemo = (cells[1].innerText.search(demoRegexp) > -1); // /(\s|\()(demo|prologue)(?![a-z])/i
+                    const customKeywords = sch.value.trim() ? sch.value.trim().replace(/^[`'"]|[`'"]$/g, '').split(/\s*['"]?\s*[,，、]\s*['"]?\s*/) : [];
+                    const customPattern = customKeywords.length ? `\\b(${customKeywords.join("|")})\\b` : `^$` ;
+                    const customRegexp = new RegExp(customPattern, "i");
+                    const isCustom = cells[1].innerText.search(customRegexp) > -1;
+                    const isDemo = cells[1].innerText.search(demoRegexp) > -1; // /(\s|\()(demo|prologue)(?![a-z])/i
                     
-                    if ( packageId && isDemo ) {
+                    if ( packageId && ( noDemo || isDemo || isCustom ) ) {
                         row.id = packageId;
                         games.push({
                             packageId,
                             itemName,
                             removeLink,
+                            isCustom,
                             isDemo
                         });
                     }
@@ -919,8 +942,6 @@
                 if (removeLink) {
                     const name = p.childNodes[p.childNodes.length-1].textContent;
                     const isRemoved = removedIds.has(packageId.textContent.trim());
-                    const pattern = `\\b(${demoWesternKeywords.join("|")})\\b|(${demoAsianKeywords.join("|")})(${demoAsianSuffixes.join("|")})?`;
-                    const demoRegexp = new RegExp(pattern, "i");
                     const isDemo = name.search(demoRegexp) > -1;
                     if (isDemo || isRemoved) {
                         games.push(name);
