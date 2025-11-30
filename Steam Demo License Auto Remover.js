@@ -53,11 +53,6 @@
     const demoPattern = `\\b(${demoWesternKeywords.join("|")})\\b|(${demoAsianKeywords.join("|")})(${demoAsianSuffixes.join("|")})?`;
     const demoRegexp = new RegExp(demoPattern, "i");
 
-    /**
-     * Updates a stored array by merging new items (unique only).
-     * @param {string} storageKey - The name of the value (GM storage key).
-     * @param {Array} newItemsArray - The array to update with.
-     */
     const gmReset = document.createElement('input');
     gmReset.id = 'resetGMvar';
     gmReset.type = 'checkbox';
@@ -66,6 +61,12 @@
     gmReset.checked = false;
     gmReset.hidden = true;
     gmReset.className = "cleaningButton";
+    /**
+     * Updates a stored array by merging new items (unique only).
+     * @param {string} storageKey - The name of the value (GM storage key).
+     * @param {Array} newItemsArray - The array to update with.
+     * @param {string} key - The key to compare for duplicates.
+     */
     async function updateToStorage(storageKey, newItemsArray, key = "packageId") {
         // 1. GET (Async): Doesn't block the UI while fetching data
         let jsonString = await GM.getValue(storageKey, "[]");
