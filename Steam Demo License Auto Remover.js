@@ -53,21 +53,21 @@
     const demoPattern = `\\b(${demoWesternKeywords.join("|")})\\b|(${demoAsianKeywords.join("|")})(${demoAsianSuffixes.join("|")})?`;
     const demoRegexp = new RegExp(demoPattern, "i");
 
-    const gmReset = document.createElement('input');
-    gmReset.id = 'resetGMvar';
-    gmReset.type = 'checkbox';
-    gmReset.name = 'option';
-    gmReset.value = 'selected';
-    gmReset.checked = false;
-    gmReset.hidden = true;
-    gmReset.className = "cleaningButton";
+    const chkGMreset = document.createElement('input');
+    chkGMreset.id = 'resetGMvar';
+    chkGMreset.type = 'checkbox';
+    chkGMreset.name = 'option';
+    chkGMreset.value = 'selected';
+    chkGMreset.checked = false;
+    chkGMreset.hidden = true;
+    chkGMreset.className = "cleaningButton";
     /**
      * Updates a stored array by merging new items (unique only).
      * @param {string} storageKey - The name of the value (GM storage key).
      * @param {Array} newItemsArray - The array to update with.
      * @param {string} key - The key to compare for duplicates.
      */
-    async function updateToStorage(storageKey, newItemsArray, key = "packageId") {
+    async function updateToStorage(storageKey, newItemsArray, key = "packageId", reset = false) {
         // 1. GET (Async): Doesn't block the UI while fetching data
         let jsonString = await GM.getValue(storageKey, "[]");
         
@@ -95,11 +95,11 @@
         
         let combinedList = Array.from(itemMap.values());
 
-        console.log(gmReset.checked ? `Resetting ${storageKey} Value:` : `Updating ${storageKey} Value:`, 
-                    gmReset.checked ? newItemsArray : combinedList);
+        console.log(reset ? `Resetting ${storageKey} Value:` : `Updating ${storageKey} Value:`, 
+                    reset ? newItemsArray : combinedList);
         
         // 3. SAVE (Async)
-        if ( gmReset.checked ) return await GM.setValue(storageKey, JSON.stringify(newItemsArray));
+        if ( reset ) return await GM.setValue(storageKey, JSON.stringify(newItemsArray));
         else return await GM.setValue(storageKey, JSON.stringify(combinedList));
     }
     
@@ -294,7 +294,7 @@
 
             const divContainer = document.createElement("div");
             divContainer.style.display = 'flex';
-            divContainer.append(gmReset);
+            divContainer.append(chkGMreset);
             divContainer.append(btn);
             divContainer.append(chklbl);
             divContainer.append(retrybtn);
@@ -872,7 +872,7 @@
         async function startCleaning(statusDiv) {
             await requestWakeLock();
             const games = scanRemovableGames(!chk.checked,schchk.checked);
-            console.log(updateToStorage("games2remove", games));
+            console.log(updateToStorage("games2remove", games, "packageId", chkGMreset.checked));
             const total = games.length;
     
             console.log(`Removing ${total} games:`, games);
