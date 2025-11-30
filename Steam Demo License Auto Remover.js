@@ -1016,7 +1016,7 @@
             noDemoButton.appendChild(chk);
             noDemoButton.addEventListener('click', () => { chk.checked = !chk.checked; }, { capture: true });
             activateButton.parentElement.appendChild(noDemoButton);
-            activateButton.addEventListener('click', () => {
+            activateButton.addEventListener('click', async () => {
                 const originalText = activateButton.textContent;
                 const games2remove = JSON.parse(await GM.getValue("games2remove", "[]"));
                 if ( chk.checked ) {
