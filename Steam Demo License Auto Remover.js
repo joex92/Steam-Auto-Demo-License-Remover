@@ -2,7 +2,7 @@
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
 // @version      6.6.6
-// @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo titles only. Also it helps to auto ignore the removed games in the steamDB free packages script page.
+// @description  This is an English Translated version from the riginal by PeiqiLi. Plus the addition of removing demo titles only as well as auto ignore the removed games in the steamDB free packages script page.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
 // @match        https://steamdb.info/freepackages/*
