@@ -53,6 +53,29 @@
     const demoPattern = `\\b(${demoWesternKeywords.join("|")})\\b|(${demoAsianKeywords.join("|")})(${demoAsianSuffixes.join("|")})?`;
     const demoRegexp = new RegExp(demoPattern, "i");
 
+    function customRegExp(customKeywords = []) {
+        const customAllowed = [];
+        const customNotAllowed = [];
+        // 2. Sort terms
+        customKeywords.forEach(term => {
+            if (term.startsWith("-")) {
+                customNotAllowed.push(term.substring(1));
+            } else {
+                customAllowed.push(term);
+            }
+        });
+        const negateOnly = ( customAllowed.length == 0 ) && ( customNotAllowed.length > 0 );
+        const customPattern = ( customNotAllowed.length || customAllowed.length ) ? 
+            `^${ customNotAllowed.length ? 
+                ( `(?!.*\\b(${customNotAllowed.join("|")})\\b)` ) : 
+                "" }(?=.*${customAllowed.length ? 
+                           (`\\b(${customAllowed.join("|")})\\b` ) : 
+                           ""})` : 
+            `(?!)` ;
+        const regExp = new RegExp(customPattern, "i");
+        return {negateOnly, regExp}
+    }
+
     const chkGMreset = document.createElement('input');
     chkGMreset.id = 'resetGMvar';
     chkGMreset.type = 'checkbox';
@@ -368,26 +391,8 @@
             const games = [];
             const customKeywords = sch.value.trim() ? sch.value.trim().replace(/^[`'"]|[`'"]$/g, '').split(/\s*['"]?\s*[,，、]\s*['"]?\s*/) : [];
             console.log(await updateArrayToStorage("customFilter", customKeywords, "length", true));
-            const customAllowed = [];
-            const customNotAllowed = [];
-            // 2. Sort terms
-            customKeywords.forEach(term => {
-                if (term.startsWith("-")) {
-                    customNotAllowed.push(term.substring(1));
-                } else {
-                    customAllowed.push(term);
-                }
-            });
-            const customNegateOnly = ( customAllowed.length == 0 ) && ( customNotAllowed.length > 0 );
-            const customPattern = ( customNotAllowed.length || customAllowed.length ) ? 
-                `^${ customNotAllowed.length ? 
-                    ( `(?!.*\\b(${customNotAllowed.join("|")})\\b)` ) : 
-                    "" }(?=.*${customAllowed.length ? 
-                               (`\\b(${customAllowed.join("|")})\\b` ) : 
-                               ""})` : 
-                `(?!)` ;
-            const customRegexp = new RegExp(customPattern, "i");
-    
+            const customFilter = customRegExp(customKeywords);
+            
             rows.forEach(row => {
                 const removeLink = row.querySelector('a[href^="javascript:RemoveFreeLicense"]');
                 if (removeLink) {
@@ -397,10 +402,10 @@
                     const href = removeLink.getAttribute('href');
                     const match = href.match(/RemoveFreeLicense\(\s*(\d+)\s*,/);
                     const packageId = match ? match[1] : null;
-                    const isCustom = itemName.trim().search(customRegexp) > -1;
+                    const isCustom = itemName.trim().search(customFilter.regExp) > -1;
                     const isDemo = itemName.trim().search(demoRegexp) > -1; // /(\s|\()(demo|prologue)(?![a-z])/i
                     
-                    if ( packageId && ( ( !customOnly && ( noDemo || isDemo ) ) && ( isCustom || !customNegateOnly ) ) ) {
+                    if ( packageId && ( ( !customOnly && ( noDemo || isDemo ) ) && ( isCustom || !customFilter.negateOnly ) ) ) {
                         row.id = packageId;
                         games.push({
                             packageId,
@@ -982,13 +987,14 @@
             await insertButton();
         });
     } else if (location.host.match('steamdb.info')) { ////////////////////////////////////////////////////////////////////////////////////////////////////
-        function ignoreDemoTitles(extra = []) {
+        async function ignoreDemoTitles(extra = []) {
             const packages = document.querySelectorAll('.package');
             const games = [];
             const removedIds = new Set(extra
                                        .filter(item => item.isDemo)          // 1. Keep only items where isDemo is true
                                        .map(item => String(item.packageId))  // 2. Extract the IDs from those items
                                        );
+            const customFilter = customRegExp(JSON.parse(await GM.getValue("customFilter", "[]")).join(", "));
             
             for ( const [i, p] of packages.entries() ) {
                 const removeLink = p.querySelector(".js-remove");
@@ -997,8 +1003,9 @@
                     const name = p.childNodes[p.childNodes.length-1].textContent;
                     const id = packageId.textContent;
                     const isRemoved = removedIds.has(id.trim());
-                    const isDemo = name.search(demoRegexp) > -1;
-                    if (isDemo || isRemoved) {
+                    const isCustom = iname.trim().search(customFilter.regExp) > -1;
+                    const isDemo = name.trim().search(demoRegexp) > -1;
+                    if ( ( isDemo || isRemoved ) && ( isCustom || !customFilter.negateOnly ) ) {
                         games.push({
                             id,
                             name
@@ -1031,7 +1038,7 @@
                 // if ( chk.checked ) {
                     noDemoButton.disabled = true;
                     noDemoButton.textContent = `Ignoring Demo Titles...`;
-                    const titles = ignoreDemoTitles(games2remove);
+                    const titles = await ignoreDemoTitles(games2remove);
                     console.log("Ignored Titles:", titles);
                     noDemoButton.disabled = false;
                     noDemoButton.textContent = originalText;
