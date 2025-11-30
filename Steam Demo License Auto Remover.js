@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      6.2
+// @version      6.3
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -279,14 +279,17 @@
                 pkgOpt.skipped = true;
                 timer.stop();
             });
-    
-            titleElem.parentNode.insertBefore(btn, titleElem.nextSibling);
-            titleElem.parentNode.insertBefore(chklbl, btn.nextSibling);
-            titleElem.parentNode.insertBefore(retrybtn, chklbl.nextSibling);
-            titleElem.parentNode.insertBefore(skipbtn, retrybtn.nextSibling);
-            titleElem.parentNode.insertBefore(sch, skipbtn.nextSibling);
-            titleElem.parentNode.insertBefore(schchklbl, sch.nextSibling);
-            titleElem.parentNode.insertBefore(statusDiv, sch.nextSibling);
+
+            const divContainer = document.createElement("div");
+            divContainer.style.display = 'flex';
+            divContainer.append(btn);
+            divContainer.append(chklbl);
+            divContainer.append(retrybtn);
+            divContainer.append(skipbtn);
+            divContainer.append(sch);
+            divContainer.append(schchklbl);
+            titleElem.parentNode.insertBefore(divContainer, titleElem.nextSibling);
+            titleElem.parentNode.insertBefore(statusDiv, divContainer.nextSibling);
     
             // 1. Create a new style element
             const cleaningStyle = document.createElement("style");
@@ -297,7 +300,7 @@
                     background-color: #FFD700;
                     color: #000;
                     border: none;
-                    width: auto;
+                    flex: 1;
                     padding: 5px 12px;
                     margin-left: 15px;
                     cursor: pointer;
