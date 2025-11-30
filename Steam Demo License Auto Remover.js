@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      6.1
+// @version      6.2
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -209,7 +209,7 @@
             schchk.type = 'checkbox';
             schchk.name = 'option';
             schchk.value = 'selected';
-            schchk.checked = true;
+            schchk.checked = false;
             schchk.style.pointerEvents = 'none';
             schchklbl.appendChild(document.createTextNode('📋 Custom Words Only '));
             schchklbl.appendChild(schchk);
@@ -266,6 +266,10 @@
                 chk.checked = !chk.checked;
             });
             
+            schchklbl.addEventListener('click', () => {
+                schchk.checked = !schchk.checked;
+            });
+            
             retrybtn.addEventListener('click', () => {
                 pkgOpt.retry = true;
                 timer.stop();
@@ -293,6 +297,7 @@
                     background-color: #FFD700;
                     color: #000;
                     border: none;
+                    width: auto;
                     padding: 5px 12px;
                     margin-left: 15px;
                     cursor: pointer;
@@ -360,7 +365,7 @@
                     const isCustom = cells[1].innerText.search(customRegexp) > -1;
                     const isDemo = cells[1].innerText.search(demoRegexp) > -1; // /(\s|\()(demo|prologue)(?![a-z])/i
                     
-                    if ( packageId && ( noDemo || isDemo || isCustom ) ) {
+                    if ( packageId && ( ( !customOnly && ( noDemo || isDemo ) ) || isCustom ) ) {
                         row.id = packageId;
                         games.push({
                             packageId,
@@ -834,7 +839,7 @@
     
         async function startCleaning(statusDiv) {
             await requestWakeLock();
-            const games = scanRemovableGames(!chk.checked);
+            const games = scanRemovableGames(!chk.checked,schchk.checked);
             console.log(updateToStorage("games2remove", games));
             const total = games.length;
     
