@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      6.6.4
+// @version      6.6.5
 // @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -210,10 +210,11 @@
             chk.style.pointerEvents = 'none';
             chklbl.appendChild(document.createTextNode('📋 Demo Titles Only '));
             chklbl.appendChild(chk);
-            chklbl.className = "cleaningButton";
+            chklbl.className = "cleaningButton cleaningContainer";
             
             sch.placeholder = "Words separated by commas ('-' negates). e.g.: free, -chapter";
-            sch.className = "cleaningText";
+            sch.className = "cleaningText cleaningContainer";
+            
             const schchklbl = document.createElement('button');
             schchk.type = 'checkbox';
             schchk.name = 'option';
@@ -222,15 +223,15 @@
             schchk.style.pointerEvents = 'none';
             schchklbl.appendChild(document.createTextNode('📋 Custom Words Only '));
             schchklbl.appendChild(schchk);
-            schchklbl.className = "cleaningButton";
+            schchklbl.className = "cleaningButton cleaningContainer";
     
             retrybtn.hidden = true;
             retrybtn.textContent = '🔄 Retry';
-            retrybtn.className = "cleaningButton";
+            retrybtn.className = "cleaningButton cleaningContainer";
     
             skipbtn.hidden = true;
             skipbtn.textContent = '⏭️ Skip';
-            skipbtn.className = "cleaningButton";
+            skipbtn.className = "cleaningButton cleaningContainer";
             
             const statusDiv = document.createElement('pre');
             statusDiv.hidden = true;
@@ -306,29 +307,24 @@
             
             // 2. Define the rule
             cleaningStyle.textContent = `
-                .cleaningButton {
-                    background-color: #FFD700;
+                .cleaningContainer {
                     color: #000;
                     border: none;
                     padding: 5px 12px;
-                    margin-left: 10px;
-                    margin-right: 10px;
-                    cursor: pointer;
+                    margin-left: 5px;
+                    margin-right: 5px;
                     border-radius: 4px;
                     font-weight: bold;
+                }
+                .cleaningButton {
+                    background-color: #FFD700;
+                    cursor: pointer;
                     flex-shrink: 0;
                     white-space: nowrap;
                 }
                 .cleaningText {
                     background-color: #FFD7AF;
-                    color: #000;
-                    border: none;
-                    padding: 5px 12px;
-                    margin-left: 10px;
-                    margin-right: 10px;
                     cursor: text;
-                    border-radius: 4px;
-                    font-weight: bold;
                     flex-grow: 1;
                 }
                 #cleaningStatus {
