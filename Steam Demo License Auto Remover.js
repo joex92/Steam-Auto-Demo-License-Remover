@@ -394,8 +394,8 @@
                     const href = removeLink.getAttribute('href');
                     const match = href.match(/RemoveFreeLicense\(\s*(\d+)\s*,/);
                     const packageId = match ? match[1] : null;
-                    const isCustom = cells[1].innerText.search(customRegexp) > -1;
-                    const isDemo = cells[1].innerText.search(demoRegexp) > -1; // /(\s|\()(demo|prologue)(?![a-z])/i
+                    const isCustom = itemName.trim().search(customRegexp) > -1;
+                    const isDemo = itemName.trim().search(demoRegexp) > -1; // /(\s|\()(demo|prologue)(?![a-z])/i
                     
                     if ( packageId && ( ( !customOnly && ( noDemo || isDemo ) ) && ( isCustom || !customNegateOnly ) ) ) {
                         row.id = packageId;
