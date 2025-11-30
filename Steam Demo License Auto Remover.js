@@ -200,7 +200,7 @@
             }
     
             btn.textContent = '🧹 Start cleaning';
-            btn.className = "cleaningButton";
+            btn.className = "cleaningButton cleaningContainer";
                     
             const chklbl = document.createElement('button');
             chk.type = 'checkbox';
