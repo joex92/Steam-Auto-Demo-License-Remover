@@ -2,7 +2,7 @@
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
 // @version      6.6.6
-// @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo/prologue titles only.
+// @description  Original by PeiqiLi. This is an English Translated version with the addition of removing demo titles only.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
 // @match        https://steamdb.info/freepackages/*
@@ -1003,32 +1003,32 @@
             
             return games;
         }
-        const chk = document.createElement('input');
-        chk.type = 'checkbox';
-        chk.name = 'option';
-        chk.value = 'selected';
-        chk.checked = true;
-        chk.style.pointerEvents = 'none';
+        // const chk = document.createElement('input');
+        // chk.type = 'checkbox';
+        // chk.name = 'option';
+        // chk.value = 'selected';
+        // chk.checked = true;
+        // chk.style.pointerEvents = 'none';
         const activateButton = document.querySelector("#js-activate-now");
         const noDemoButton = document.createElement("button");
         noDemoButton.className = 'btn btn-primary';
         window.onload = async (ev) => {
             console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
             noDemoButton.appendChild(document.createTextNode('Ignore all Demo titles'));
-            noDemoButton.appendChild(chk);
-            noDemoButton.addEventListener('click', () => { chk.checked = !chk.checked; }, { capture: true });
+            // noDemoButton.appendChild(chk);
+            // noDemoButton.addEventListener('click', () => { chk.checked = !chk.checked; }, { capture: true });
             activateButton.parentElement.appendChild(noDemoButton);
-            activateButton.addEventListener('click', async () => {
-                const originalText = activateButton.textContent;
+            noDemoButton.addEventListener('click', async () => {
+                const originalText = noDemoButton.textContent;
                 const games2remove = JSON.parse(await GM.getValue("games2remove", "[]"));
-                if ( chk.checked ) {
+                // if ( chk.checked ) {
                     noDemoButton.disabled = true;
-                    activateButton.textContent = `⌛ Ignoring Demo/Prologue Titles`;
+                    noDemoButton.textContent = `Ignoring Demo Titles...`;
                     const titles = ignoreDemoTitles(games2remove);
                     console.log("Ignored Titles:", titles);
                     noDemoButton.disabled = false;
-                    activateButton.textContent = originalText;
-                }
+                    noDemoButton.textContent = originalText;
+                // }
             }, { capture: true });
         }
     }
