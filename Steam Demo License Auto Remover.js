@@ -320,7 +320,7 @@
             });
 
             const divContainer = document.createElement("div");
-            divContainer.style.display = 'flex';
+            divContainer.id = "cleaningDiv";
             divContainer.append(chkGMreset);
             divContainer.append(btn);
             divContainer.append(chklbl);
@@ -356,6 +356,11 @@
                     cursor: text;
                     flex-grow: 1;
                 }
+				#cleaningDiv {
+					display: flex;
+					width: 100%;
+					overflow-x = auto;
+				}
                 #cleaningStatus {
                     border: 1px solid #ccc;
                     padding: 10px;
