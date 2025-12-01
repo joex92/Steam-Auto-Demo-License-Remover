@@ -213,6 +213,7 @@
         }
     }
     const timer = new SleepTimer();
+	let hasError21 = false;
     
     if ( location.host.match('store.steampowered.com') ) { ////////////////////////////////////////////////////////////////////////////////////////////////////
         const btn = document.createElement('button');
@@ -280,7 +281,9 @@
                     startCleaning(statusDiv).then(() => {
                         if ( timer.wasStopped ) {
                             statusDiv.append(`\n❌ Cleaning stopped by user! \n`);
-                        } else {
+                        } else if ( hasError21 ) {
+                            statusDiv.append(`\n❌ Cleaning stopped. Reload page. \n`);
+						} else {
                             statusDiv.append('\n✨ Completed！\n');
                             // btn.disabled = false;
                             sch.hidden = false;
@@ -899,7 +902,7 @@
                 btn.disabled = false;
                 return;
             }
-    
+			
             let hasError84 = false; 
             let avgCount = 1;
             let avgSum = 0;
@@ -939,7 +942,9 @@
                     g.removeLink.parentElement.parentElement.parentElement.remove();
                 } else {
                     statusDiv.append(`❌ Failed to remove. Reason：${result.error}\n`);
-                    if (result.code === 84) {
+                    if (result.code === 21) {
+                        hasError21 = true;
+                    } else if (result.code === 84) {
                         hasError84 = true;
                     } else {
                         hasError84 = false;
@@ -950,7 +955,7 @@
                 statusDiv.append(`Removed：${i} / ${total} (${((i / total)*100).toFixed(2)}%)\n`);
                 statusDiv.scrollTop = statusDiv.scrollHeight;
     
-                if (i < total) {
+                if ( i < total && !hasError21 ) {
                     delay = hasError84 ? Math.max( Math.pow( randomDelay( 390000, 510000 ), 1 / ( 1 + ( ( retries - 1 ) / 10 ) ) ), randomDelay( 30000, 90000 ) ) : randomDelay( 500, 1500 );
                     avgSum += delay;
                     const avgDelay = avgSum / avgCount; // hasError84 ? 420000 : 1000;;
@@ -970,7 +975,7 @@
                             retries = 0;
                         } else break;
                     }
-                }
+                } else if ( hasError21 ) break;
                 if (result.success) avgCount++;
             }
             await releaseWakeLock();
