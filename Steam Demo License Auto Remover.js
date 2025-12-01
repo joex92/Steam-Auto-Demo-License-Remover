@@ -1037,7 +1037,7 @@
 		noDemoButton.id = "ignoreDemos";
         noDemoButton.className = 'btn btn-primary';
 		noDemoButton.append('Ignore all Demo packages');
-		window.onload = () => {
+		window.onload = async () => {
 			await timer.start(3000);
 			console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
 			// noDemoButton.appendChild(chk);
