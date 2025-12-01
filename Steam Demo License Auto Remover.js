@@ -14,6 +14,8 @@
 
 (function() {
     'use strict';
+	
+	console.log("[One-Click Steam Demo License Auto Remover] loading script...");
 
     if (!Element.prototype.append) {
         const msg = "[One-Click Steam Demo License Auto Remover] Browser not supported!";
