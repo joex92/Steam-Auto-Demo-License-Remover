@@ -1034,25 +1034,38 @@
         // chk.style.pointerEvents = 'none';
         const activateButton = document.querySelector("#js-activate-now");
         const noDemoButton = document.createElement("button");
+		noDemoButton.id = "ignoreDemos";
         noDemoButton.className = 'btn btn-primary';
-        window.onload = async (ev) => {
-            console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
-            noDemoButton.appendChild(document.createTextNode('Ignore all Demo packages'));
-            // noDemoButton.appendChild(chk);
-            // noDemoButton.addEventListener('click', () => { chk.checked = !chk.checked; }, { capture: true });
-            activateButton.parentElement.appendChild(noDemoButton);
-            noDemoButton.addEventListener('click', async () => {
-                const originalText = noDemoButton.textContent;
-                const games2remove = JSON.parse(await GM.getValue("games2remove", "[]"));
-                // if ( chk.checked ) {
-                    noDemoButton.disabled = true;
-                    noDemoButton.textContent = `Ignoring Demo Titles...`;
-                    const titles = await ignoreDemoTitles(games2remove);
-                    console.log("Ignored Titles:", titles);
-                    noDemoButton.disabled = false;
-                    noDemoButton.textContent = originalText;
-                // }
-            }, { capture: true });
-        }
+		noDemoButton.append('Ignore all Demo packages');
+		const observer = new MutationObserver( async (mutationsList) => {
+			for (const mutation of mutationsList) {
+				if ( mutation.target.querySelector("#js-activate-now") ) {
+					if ( !mutation.target.querySelector("#ignoreDemos") ) {
+						console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
+						// noDemoButton.appendChild(chk);
+						// noDemoButton.addEventListener('click', () => { chk.checked = !chk.checked; }, { capture: true });
+						activateButton.parentElement.appendChild(noDemoButton);
+						noDemoButton.addEventListener('click', async () => {
+							const originalText = noDemoButton.textContent;
+							const games2remove = JSON.parse(await GM.getValue("games2remove", "[]"));
+							// if ( chk.checked ) {
+								noDemoButton.disabled = true;
+								noDemoButton.textContent = `Ignoring Demo Titles...`;
+								const titles = await ignoreDemoTitles(games2remove);
+								console.log("Ignored Titles:", titles);
+								noDemoButton.disabled = false;
+								noDemoButton.textContent = originalText;
+							// }
+						}, { capture: true });
+					}
+				}
+				
+			}
+		});
+
+		const obConfig = { childList: true, subtree: true };
+		// window.onload = () => {
+			observer.observe(document.querySelector('#freepackages'), obConfig);
+		// };
     }
 })();
