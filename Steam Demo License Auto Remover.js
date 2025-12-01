@@ -1035,12 +1035,26 @@
 		noDemoButton.id = "ignoreDemos";
 		noDemoButton.className = 'btn btn-primary';
 		noDemoButton.append('Ignore all Demo packages');
+		
+		// 1. Create a new style element
+		const ignoreStyle = document.createElement("style");
+		
+		// 2. Define the rule
+		ignoreStyle.textContent = `
+			.btn.btn-primary {
+				margin-bottom: 2px;
+			}
+		`;
+		
+		// 3. Append it to the document head
+		document.head.appendChild(ignoreStyle);
+		
 		const observer = new MutationObserver( async (mutationsList) => {
 			for (const mutation of mutationsList) {
 				if ( mutation.target.querySelector("#js-activate-now") ) {
 					if ( !mutation.target.querySelector("#ignoreDemos") ) {
 						console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
-						activateButton.parentElement.appendChild(noDemoButton);
+						activateButton.parentElement.append(noDemoButton);
 						noDemoButton.addEventListener('click', async () => {
 							const originalText = noDemoButton.textContent;
 							const games2remove = JSON.parse(await GM.getValue("games2remove", "[]"));
