@@ -1040,7 +1040,7 @@
         const activateButton = document.querySelector("#js-activate-now");
         const noDemoButton = document.createElement("button");
 		noDemoButton.id = "ignoreDemos";
-        noDemoButton.className = 'btn btn-primary';
+		noDemoButton.className = 'btn btn-primary';
 		noDemoButton.append('Ignore all Demo packages');
 		const observer = new MutationObserver( async (mutationsList) => {
 			for (const mutation of mutationsList) {
@@ -1067,10 +1067,7 @@
 				
 			}
 		});
-
 		const obConfig = { childList: true, subtree: true };
-		// window.onload = () => {
-			observer.observe(document.body, obConfig);
-		// };
+		observer.observe(document.body, obConfig);
     }
 })();
