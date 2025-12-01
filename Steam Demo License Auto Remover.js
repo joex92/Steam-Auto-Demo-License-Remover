@@ -1028,15 +1028,8 @@
                     }
                 }
             }
-            
             return games;
         }
-        // const chk = document.createElement('input');
-        // chk.type = 'checkbox';
-        // chk.name = 'option';
-        // chk.value = 'selected';
-        // chk.checked = true;
-        // chk.style.pointerEvents = 'none';
         const activateButton = document.querySelector("#js-activate-now");
         const noDemoButton = document.createElement("button");
 		noDemoButton.id = "ignoreDemos";
@@ -1047,20 +1040,16 @@
 				if ( mutation.target.querySelector("#js-activate-now") ) {
 					if ( !mutation.target.querySelector("#ignoreDemos") ) {
 						console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
-						// noDemoButton.appendChild(chk);
-						// noDemoButton.addEventListener('click', () => { chk.checked = !chk.checked; }, { capture: true });
 						activateButton.parentElement.appendChild(noDemoButton);
 						noDemoButton.addEventListener('click', async () => {
 							const originalText = noDemoButton.textContent;
 							const games2remove = JSON.parse(await GM.getValue("games2remove", "[]"));
-							// if ( chk.checked ) {
-								noDemoButton.disabled = true;
-								noDemoButton.textContent = `Ignoring Demo Titles...`;
-								const titles = await ignoreDemoTitles(games2remove);
-								console.log("Ignored Titles:", titles);
-								noDemoButton.disabled = false;
-								noDemoButton.textContent = originalText;
-							// }
+							noDemoButton.disabled = true;
+							noDemoButton.textContent = `Ignoring Demo Titles...`;
+							const titles = await ignoreDemoTitles(games2remove);
+							console.log("Ignored Titles:", titles);
+							noDemoButton.disabled = false;
+							noDemoButton.textContent = originalText;
 						}, { capture: true });
 					}
 				}
