@@ -28,7 +28,7 @@
     const demoWesternKeywords = [// "ost", "soundtrack",
         "free weekend", "demo", "prologue", "trial", "episode", "chapter",
         "alpha", "beta", "sample", "part", "trailer", "playtest",
-        "preview", "benchmark", "teaser", "spectator",
+        "preview", "benchmark", "teaser", "spectator", "early access",
         // Russian
         "демо", "пролог", "эпизод", "альфа", "бета", "тест",
         "пробная", "тизер", "плейтест", "ознакомительная"
