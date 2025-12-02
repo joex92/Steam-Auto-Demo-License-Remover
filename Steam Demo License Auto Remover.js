@@ -942,9 +942,9 @@
                     g.removeLink.parentElement.parentElement.parentElement.remove();
                 } else {
                     statusDiv.append(`❌ Failed to remove. Reason：${result.error}\n`);
-                    if (result.code === 21) {
+                    if (result.code === 21 || result.code === 8) {
                         hasError21 = true;
-                    } else if (result.code === 84) {
+                    } else if ( result.code === 84) {
                         hasError84 = true;
                     } else {
                         hasError84 = false;
