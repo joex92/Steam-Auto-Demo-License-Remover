@@ -1049,7 +1049,8 @@
 		// 3. Append it to the document head
 		document.head.appendChild(ignoreStyle);
 
-		async function insertButton() {
+		window.onload = async (ev) => {
+			console.log("Starting button insertion:", ev);
 			while ( !document.querySelector("#js-activate-now") ) {
 				if ( !document.querySelector("#ignoreDemos") ) {
 					console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
@@ -1070,10 +1071,10 @@
 		
 		const observer = new MutationObserver( async (mutationsList) => {
 			for (const mutation of mutationsList) {
+				window.onload();
 			}
 		});
 		const obConfig = { childList: true, subtree: true };
 		observer.observe(document.body, obConfig);
-		window.onload = insertButton;
     }
 })();
