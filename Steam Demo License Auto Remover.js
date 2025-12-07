@@ -1074,6 +1074,6 @@
 		});
 		const obConfig = { childList: true, subtree: true };
 		observer.observe(document.body, obConfig);
-		insertButton();
+		window.onload = insertButton;
     }
 })();
