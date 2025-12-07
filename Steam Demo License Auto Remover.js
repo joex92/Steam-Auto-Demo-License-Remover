@@ -1070,10 +1070,10 @@
 		
 		const observer = new MutationObserver( async (mutationsList) => {
 			for (const mutation of mutationsList) {
-				insertButton();
 			}
 		});
 		const obConfig = { childList: true, subtree: true };
 		observer.observe(document.body, obConfig);
+		insertButton();
     }
 })();
