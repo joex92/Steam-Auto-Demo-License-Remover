@@ -1048,26 +1048,29 @@
 		
 		// 3. Append it to the document head
 		document.head.appendChild(ignoreStyle);
+
+		async function insertButton() {
+			while ( !document.querySelector("#js-activate-now") ) {
+				if ( !document.querySelector("#ignoreDemos") ) {
+					console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
+					activateButton.parentElement.append(noDemoButton);
+					noDemoButton.addEventListener('click', async () => {
+						const originalText = noDemoButton.textContent;
+						const games2remove = JSON.parse(await GM.getValue("games2remove", "[]"));
+						noDemoButton.disabled = true;
+						noDemoButton.textContent = `Ignoring Demo Titles...`;
+						const titles = await ignoreDemoTitles(games2remove);
+						console.log("Ignored Titles:", titles);
+						noDemoButton.disabled = false;
+						noDemoButton.textContent = originalText;
+					}, { capture: true });
+				}
+			}
+		}
 		
 		const observer = new MutationObserver( async (mutationsList) => {
 			for (const mutation of mutationsList) {
-				while ( !mutation.target.querySelector("#js-activate-now") ) {
-					if ( !mutation.target.querySelector("#ignoreDemos") ) {
-						console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
-						activateButton.parentElement.append(noDemoButton);
-						noDemoButton.addEventListener('click', async () => {
-							const originalText = noDemoButton.textContent;
-							const games2remove = JSON.parse(await GM.getValue("games2remove", "[]"));
-							noDemoButton.disabled = true;
-							noDemoButton.textContent = `Ignoring Demo Titles...`;
-							const titles = await ignoreDemoTitles(games2remove);
-							console.log("Ignored Titles:", titles);
-							noDemoButton.disabled = false;
-							noDemoButton.textContent = originalText;
-						}, { capture: true });
-					}
-				}
-				
+				insertButton();
 			}
 		});
 		const obConfig = { childList: true, subtree: true };
