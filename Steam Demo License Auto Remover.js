@@ -1051,7 +1051,7 @@
 		
 		const observer = new MutationObserver( async (mutationsList) => {
 			for (const mutation of mutationsList) {
-				if ( mutation.target.querySelector("#js-activate-now") ) {
+				while ( !mutation.target.querySelector("#js-activate-now") ) {
 					if ( !mutation.target.querySelector("#ignoreDemos") ) {
 						console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
 						activateButton.parentElement.append(noDemoButton);
