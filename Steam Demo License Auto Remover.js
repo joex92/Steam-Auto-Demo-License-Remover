@@ -1030,7 +1030,6 @@
             }
             return games;
         }
-        const activateButton = document.querySelector("#js-activate-now");
         const noDemoButton = document.createElement("button");
 		noDemoButton.id = "ignoreDemos";
 		noDemoButton.className = 'btn btn-primary';
@@ -1051,7 +1050,8 @@
 
 		window.onload = async (ev) => {
 			console.log("Starting button insertion:", ev);
-			while ( !document.querySelector("#js-activate-now") ) {
+			const activateButton = document.querySelector("#js-activate-now");
+			if ( activateButton ) {
 				if ( !document.querySelector("#ignoreDemos") ) {
 					console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
 					activateButton.parentElement.append(noDemoButton);
