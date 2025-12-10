@@ -27,7 +27,7 @@
     // DEMO 1. Western (English/Russian) - Requires \b boundaries
     const demoWesternKeywords = [// "ost", "soundtrack",
         "free weekend", "demo", "prologue", "trial", "episode", "chapter",
-        "alpha", "beta", "sample", "part", "trailer", "playtest",
+        "alpha", "beta", "sample", "part", "trailer", "playtest", "prolog",
         "preview", "benchmark", "teaser", "spectator", "early access",
         // Russian
         "демо", "пролог", "эпизод", "альфа", "бета", "тест",
