@@ -396,7 +396,7 @@
                     margin-top: 10px;
                     min-height: 3em;
                     max-height: ${ Math.max( innerHeight - document.querySelector(".page_content_ctn").getBoundingClientRect().top - 10, document.querySelector(".page_content_ctn").getBoundingClientRect().top - 30 ) }px;
-                    overflow-y: auto;
+                    overflow: auto;
                     white-space: pre-wrap;
                     background-color: #FFD700;
                     color: #000;
