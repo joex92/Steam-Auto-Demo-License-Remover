@@ -93,6 +93,7 @@
      * @param {string} storageKey - The name of the value (GM storage key).
      * @param {Array} newItemsArray - The array to update with.
      * @param {string} key - The key to compare for duplicates.
+     * @param {Array} customFilterKeywords - Array of words to filter out from the stored array.
      * @param {boolean} reset - Reset the value with the new array.
      */
     async function updateArrayToStorage(storageKey, newItemsArray, key = "packageId", customFilterKeywords = [], reset = false) {
@@ -113,9 +114,9 @@
         //     currentList = [];
         // }
 		const currentList = Array.isArray(parsedString) ? parsedString : [];
-        const customFilter = Array.isArray(customFilter) ? customRegExp(customFilterKeywords) : [];
+        const customFilter = Array.isArray(customFilterKeywords) ? customRegExp(customFilterKeywords) : {};
 
-		if ( customFilter.length > 0 ){
+		if ( customFilterKeywords.length > 0 ){
 			const filter = customRegExp(customFilter);
 			let i = 0;
 			while ( i < currentList.length )
