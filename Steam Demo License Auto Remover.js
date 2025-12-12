@@ -362,7 +362,7 @@
                     background-color: #FFD7AF;
                     cursor: text;
                     flex-grow: 1;
-					min-width: 200px;
+					min-width: 264px;
                 }
 				#cleaningDiv {
 					display: flex;
