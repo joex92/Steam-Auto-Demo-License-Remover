@@ -104,14 +104,14 @@
 		
         // 1. GET (Async): Doesn't block the UI while fetching data
         const jsonString = await GM.getValue(storageKey, "[]");
+		const parsedString = JSON.parse(jsonString);
         // let currentList = [];
         // try {
-        //     currentList = JSON.parse(jsonString);
+        //     currentList = parsedString;
         //     if (!Array.isArray(currentList)) currentList = [];
         // } catch (e) {
         //     currentList = [];
         // }
-		const parsedString = JSON.parse(jsonString);
 		const currentList = Array.isArray(parsedString) ? parsedString : [];
         const customFilter = Array.isArray(customFilter) ? customRegExp(customFilterKeywords) : [];
 
