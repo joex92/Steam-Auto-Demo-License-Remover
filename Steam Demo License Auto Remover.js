@@ -95,17 +95,37 @@
      * @param {string} key - The key to compare for duplicates.
      * @param {boolean} reset - Reset the value with the new array.
      */
-    async function updateArrayToStorage(storageKey, newItemsArray, key = "packageId", reset = false) {
+    async function updateArrayToStorage(storageKey, newItemsArray, key = "packageId", customFilterKeywords = [], reset = false) {
+		
+        if ( reset ) {
+			console.log(`Resetting ${storageKey} Value:`, newItemsArray)
+			return await GM.setValue(storageKey, JSON.stringify(newItemsArray));
+		}
+		
         // 1. GET (Async): Doesn't block the UI while fetching data
-        let jsonString = await GM.getValue(storageKey, "[]");
-        
+        const jsonString = await GM.getValue(storageKey, "[]");
         let currentList = [];
-        try {
-            currentList = JSON.parse(jsonString);
-            if (!Array.isArray(currentList)) currentList = [];
-        } catch (e) {
-            currentList = [];
-        }
+        // try {
+        //     currentList = JSON.parse(jsonString);
+        //     if (!Array.isArray(currentList)) currentList = [];
+        // } catch (e) {
+        //     currentList = [];
+        // }
+		const parsedString = JSON.parse(jsonString);
+		const currentList = Array.isArray(parsedString) ? parsedString : [];
+        const customFilter = Array.isArray(customFilter) ? customRegExp(customFilterKeywords) : [];
+
+		if ( customFilter.length > 0 ){
+			const filter = customRegExp(customFilter);
+			let i = 0;
+			while ( i < currentList.length )
+				if ( filter.negateOnly ) {
+					if ( !JSON.stringify(currentList[i]).match(filter.regExp) ) {
+						currentList.splice(i,1);
+					} else i++;
+				}
+			}
+		}
 
         // 2. OPTIMIZED MERGE (Map based on packageId)
         // This runs in O(N) time and is much faster than stringifying objects.
@@ -123,12 +143,10 @@
         
         let combinedList = Array.from(itemMap.values());
 
-        console.log(reset ? `Resetting ${storageKey} Value:` : `Updating ${storageKey} Value:`, 
-                    reset ? newItemsArray : combinedList);
+        console.log(`Updating ${storageKey} Value:`, combinedList);
         
         // 3. SAVE (Async)
-        if ( reset ) return await GM.setValue(storageKey, JSON.stringify(newItemsArray));
-        else return await GM.setValue(storageKey, JSON.stringify(combinedList));
+        return await GM.setValue(storageKey, JSON.stringify(combinedList));
     }
     
     class SleepTimer {
@@ -407,7 +425,7 @@
             const rows = document.querySelectorAll('.account_table tr');
             const games = [];
             const customKeywords = sch.value.trim() ? sch.value.trim().replace(/^[`'"]|[`'"]$/g, '').split(/\s*['"]?\s*[,，、]\s*['"]?\s*/) : [];
-            console.log(await updateArrayToStorage("customFilter", customKeywords, "length", true));
+            console.log(await updateArrayToStorage("customFilter", customKeywords, "length", [], true));
             const customFilter = customRegExp(customKeywords);
             
             rows.forEach(row => {
@@ -897,7 +915,7 @@
         async function startCleaning(statusDiv) {
             await requestWakeLock();
             const games = await scanRemovableGames(!chk.checked,schchk.checked);
-            console.log(updateArrayToStorage("games2remove", games, "packageId", chkGMreset.checked));
+            console.log(updateArrayToStorage("games2remove", games, "packageId", JSON.parse(await GM.getValue("customFilter", "[]")), chkGMreset.checked));
             const total = games.length;
     
             console.log(`Removing ${total} games:`, games);
