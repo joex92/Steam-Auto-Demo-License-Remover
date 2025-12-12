@@ -366,6 +366,7 @@
                 }
 				#cleaningDiv {
 					display: flex;
+					flex-wrap: wrap;
 					width: 100%;
 					overflow-x: auto;
 					gap: 5px;
