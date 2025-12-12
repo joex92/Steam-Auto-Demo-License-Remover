@@ -375,7 +375,7 @@
                     cursor: pointer;
                     flex-shrink: 0;
                     white-space: nowrap;
-					flex-shrink: 0;
+                    flex-grow: 1;
                 }
                 .cleaningText {
                     background-color: #FFD7AF;
