@@ -119,7 +119,7 @@
 		if ( customFilterKeywords.length > 0 ){
 			const filter = customRegExp(customFilter);
 			let i = 0;
-			while ( i < currentList.length )
+			while ( i < currentList.length ) {
 				if ( filter.negateOnly ) {
 					if ( !JSON.stringify(currentList[i]).match(filter.regExp) ) {
 						currentList.splice(i,1);
