@@ -124,7 +124,7 @@
 					if ( !JSON.stringify(currentList[i]).match(filter.regExp) ) {
 						currentList.splice(i,1);
 					} else i++;
-				}
+				} else break;
 			}
 		}
 
