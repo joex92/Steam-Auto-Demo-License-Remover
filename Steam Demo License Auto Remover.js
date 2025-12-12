@@ -349,22 +349,26 @@
                     margin-right: 5px;
                     border-radius: 4px;
                     font-weight: bold;
+					margin: 5px;
                 }
                 .cleaningButton {
                     background-color: #FFD700;
                     cursor: pointer;
                     flex-shrink: 0;
                     white-space: nowrap;
+					flex-shrink: 0;
                 }
                 .cleaningText {
                     background-color: #FFD7AF;
                     cursor: text;
                     flex-grow: 1;
+					min-width: 200px;
                 }
 				#cleaningDiv {
 					display: flex;
 					width: 100%;
-					overflow-x = auto;
+					overflow-x: auto;
+					gap: 5px;
 				}
                 #cleaningStatus {
                     border: 1px solid #ccc;
