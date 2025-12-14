@@ -440,8 +440,12 @@
                     const packageId = match ? match[1] : null;
                     const isCustom = itemName.trim().search(customFilter.regExp) > -1;
                     const isDemo = itemName.trim().search(demoRegexp) > -1; // /(\s|\()(demo|prologue)(?![a-z])/i
-                    
-                    if ( packageId && ( ( !customOnly && ( noDemo || isDemo ) ) && ( isCustom || !customFilter.negateOnly ) ) ) {
+
+					const demoCheck = !customOnly && ( noDemo || isDemo );
+					const packageCheck = ( customFilter.negateOnly && !customOnly ) 
+						? ( demoCheck && isCustom ) 
+						: ( demoCheck || isCustom );
+                    if ( packageId && ( packageCheck ) ) {
                         row.id = packageId;
                         games.push({
                             packageId,
