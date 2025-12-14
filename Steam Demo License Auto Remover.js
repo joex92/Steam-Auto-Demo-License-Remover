@@ -56,7 +56,7 @@
     const demoRegexp = new RegExp(demoPattern, "i");
 
     function customRegExp(customKeywords = []) {
-        if (!Array.isArray(customKeywords)) return { negateOnly: false, regExp: new RegExp(`(?!)`, "i") };
+        if (!Array.isArray(customKeywords)) return { hasNegation: false, regExp: new RegExp(`(?!)`, "i") };
     
         const customAllowed = [];
         const customNotAllowed = [];
@@ -68,7 +68,7 @@
                 customAllowed.push(term);
             }
         });
-        const negateOnly = ( customAllowed.length == 0 ) && ( customNotAllowed.length > 0 );
+        const hasNegation = ( customNotAllowed.length > 0 ); // && ( customAllowed.length == 0 );
         const customPattern = ( customNotAllowed.length || customAllowed.length ) ? 
             `^${ customNotAllowed.length ? 
                 ( `(?!.*\\b(${customNotAllowed.join("|")})\\b)` ) : 
@@ -77,7 +77,7 @@
                            ""})` : 
             `(?!)` ;
         const regExp = new RegExp(customPattern, "i");
-        return {negateOnly, regExp}
+        return {hasNegation, regExp}
     }
 
     const chkGMreset = document.createElement('input');
@@ -120,7 +120,7 @@
 			const filter = customRegExp(customFilter);
 			let i = 0;
 			while ( i < currentList.length ) {
-				if ( filter.negateOnly ) {
+				if ( filter.hasNegation ) {
 					if ( !JSON.stringify(currentList[i]).match(filter.regExp) ) {
 						currentList.splice(i,1);
 					} else i++;
@@ -442,7 +442,7 @@
                     const isDemo = itemName.trim().search(demoRegexp) > -1; // /(\s|\()(demo|prologue)(?![a-z])/i
 
 					const demoCheck = !customOnly && ( noDemo || isDemo );
-					const packageCheck = ( customFilter.negateOnly && !customOnly ) 
+					const packageCheck = ( customFilter.hasNegation && !customOnly ) 
 						? ( demoCheck && isCustom ) 
 						: ( demoCheck || isCustom );
                     if ( packageId && ( packageCheck ) ) {
@@ -1047,7 +1047,7 @@
                     const isRemoved = removedIds.has(id.trim());
                     const isCustom = name.trim().search(customFilter.regExp) > -1;
                     const isDemo = name.trim().search(demoRegexp) > -1;
-                    if ( ( isDemo || isRemoved ) && ( isCustom || !customFilter.negateOnly ) ) {
+                    if ( ( isDemo || isRemoved ) && ( isCustom || !customFilter.hasNegation ) ) {
                         games.push({
                             id,
                             name
