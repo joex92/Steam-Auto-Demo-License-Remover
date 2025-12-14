@@ -114,19 +114,20 @@
         //     currentList = [];
         // }
 		const currentList = Array.isArray(parsedString) ? parsedString : [];
-        const customFilter = Array.isArray(customFilterKeywords) ? customFilterKeywords : [];
-
-		if ( customFilterKeywords.length > 0 ){
-			const filter = customRegExp(customFilter);
-			let i = 0;
-			while ( i < currentList.length ) {
-				if ( filter.hasNegation ) {
-					if ( !JSON.stringify(currentList[i]).match(filter.regExp) ) {
-						currentList.splice(i,1);
-					} else i++;
-				} else break;
-			}
-		}
+		
+		// const customFilter = Array.isArray(customFilterKeywords) ? customFilterKeywords : [];
+		// if ( customFilterKeywords.length > 0 ){
+		// 	const filter = customRegExp(customFilter);
+		// 	let i = 0;
+		// 	while ( i < currentList.length ) {
+		// 		if ( filter.hasNegation ) {
+		// 			const iString = JSON.stringify(currentList[i])
+		// 			if ( !iString.match(filter.regExp) && !iString.match(demoRegexp) ) {
+		// 				currentList.splice(i,1);
+		// 			} else i++;
+		// 		} else break;
+		// 	}
+		// }
 
         // 2. OPTIMIZED MERGE (Map based on packageId)
         // This runs in O(N) time and is much faster than stringifying objects.
