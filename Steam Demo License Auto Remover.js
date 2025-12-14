@@ -115,7 +115,7 @@
         // }
 		const currentList = Array.isArray(parsedString) ? parsedString : [];
 		
-		// const customFilter = Array.isArray(customFilterKeywords) ? customFilterKeywords : [];
+		const customFilter = Array.isArray(customFilterKeywords) ? customFilterKeywords : [];
 		// if ( customFilterKeywords.length > 0 ){
 		// 	const filter = customRegExp(customFilter);
 		// 	let i = 0;
