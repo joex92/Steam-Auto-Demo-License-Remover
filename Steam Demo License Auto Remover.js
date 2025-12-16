@@ -68,7 +68,8 @@
                 customAllowed.push(term);
             }
         });
-        const hasNegation = ( customNotAllowed.length > 0 ) && ( customAllowed.length == 0 );
+        const hasNegation = ( customNotAllowed.length > 0 );
+        const negationOnly = ( customNotAllowed.length > 0 ) && ( customAllowed.length == 0 );
         const customPattern = ( customNotAllowed.length || customAllowed.length ) ? 
             `^${ customNotAllowed.length ? 
                 ( `(?!.*\\b(${customNotAllowed.join("|")})\\b)` ) : 
@@ -77,7 +78,7 @@
                            ""})` : 
             `(?!)` ;
         const regExp = new RegExp(customPattern, "i");
-        return {hasNegation, regExp}
+        return {regExp, hasNegation, negationOnly}
     }
 
     const chkGMreset = document.createElement('input');
@@ -116,18 +117,18 @@
 		const currentList = Array.isArray(parsedString) ? parsedString : [];
 		
 		const customFilter = Array.isArray(customFilterKeywords) ? customFilterKeywords : [];
-		// if ( customFilterKeywords.length > 0 ){
-		// 	const filter = customRegExp(customFilter);
-		// 	let i = 0;
-		// 	while ( i < currentList.length ) {
-		// 		if ( filter.hasNegation ) {
-		// 			const iString = JSON.stringify(currentList[i])
-		// 			if ( !iString.match(filter.regExp) && !iString.match(demoRegexp) ) {
-		// 				currentList.splice(i,1);
-		// 			} else i++;
-		// 		} else break;
-		// 	}
-		// }
+		if ( customFilterKeywords.length > 0 ){
+			const filter = customRegExp(customFilter);
+			let i = 0;
+			while ( i < currentList.length ) {
+				if ( filter.negationOnly ) {
+					const iString = JSON.stringify(currentList[i])
+					if ( !iString.match(filter.regExp) ) {
+						currentList.splice(i,1);
+					} else i++;
+				} else break;
+			}
+		}
 
         // 2. OPTIMIZED MERGE (Map based on packageId)
         // This runs in O(N) time and is much faster than stringifying objects.
@@ -444,7 +445,9 @@
 
 					const demoCheck = !customOnly && ( noDemo || isDemo );
 					const packageCheck = ( customFilter.hasNegation && !customOnly ) 
-						? ( demoCheck && isCustom ) 
+						? ( ( customFilter.negationOnly )
+						   ? ( demoCheck && isCustom ) 
+						   : ( demoCheck || isCustom ) )
 						: ( demoCheck || isCustom );
                     if ( packageId && ( packageCheck ) ) {
                         row.id = packageId;
