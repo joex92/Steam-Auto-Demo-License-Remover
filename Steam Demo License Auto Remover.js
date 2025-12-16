@@ -56,7 +56,7 @@
     const demoRegexp = new RegExp(demoPattern, "i");
 
     function customRegExp(customKeywords = []) {
-        if (!Array.isArray(customKeywords)) return { hasNegation: false, regExp: new RegExp(`(?!)`, "i") };
+        if (!Array.isArray(customKeywords)) return { regExp: new RegExp(`(?!)`, "i"), hasNegation: false, negationOnly: false};
     
         const customAllowed = [];
         const customNotAllowed = [];
