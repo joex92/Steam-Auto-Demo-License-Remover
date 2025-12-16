@@ -14,8 +14,8 @@
 
 (function() {
     'use strict';
-	
-	console.log("[One-Click Steam Demo License Auto Remover] loading script...");
+    
+    console.log("[One-Click Steam Demo License Auto Remover] loading script...");
 
     if (!Element.prototype.append) {
         const msg = "[One-Click Steam Demo License Auto Remover] Browser not supported!";
@@ -56,8 +56,8 @@
     const demoRegexp = new RegExp(demoPattern, "i");
 
     function customRegExp(customKeywords = []) {
-		const nullRegExp = new RegExp(`(?!)`, "i");
-		if (!Array.isArray(customKeywords)) return { denyRegExp: nullRegExp, allowRegExp: nullRegExp, denyLength: 0, allowLength: 0 };
+        const nullRegExp = new RegExp(`(?!)`, "i");
+        if (!Array.isArray(customKeywords)) return { denyRegExp: nullRegExp, allowRegExp: nullRegExp, denyLength: 0, allowLength: 0 };
     
         const customAllowed = [];
         const customNotAllowed = [];
@@ -70,22 +70,20 @@
             }
         });
 
-		const allowLength = customAllowed.length;
-		const denyLength = customNotAllowed.length;
-		
-		// Veto Regex: Matches if ANY forbidden word is present
-		const denyRegExp = denyLength 
-			? new RegExp(`\\b(${customNotAllowed.join("|")})\\b`, "i") 
-			: nullRegExp;
-		
-		// Allow Regex: Matches if ANY allowed word is present
-		// Note: If you want "ALL" words to match, use lookaheads. 
-		// Based on your previous code (join "|"), you seem to want "ANY" match.
-		const allowRegExp = allowLength 
-			? new RegExp(`\\b(${customAllowed.join("|")})\\b`, "i") 
-			: nullRegExp;
-		
-		return { denyRegExp, allowRegExp, denyLength, allowLength };
+        const allowLength = customAllowed.length;
+        const denyLength = customNotAllowed.length;
+        
+        // Veto Regex: Matches if ANY forbidden word is present
+        const denyRegExp = denyLength 
+            ? new RegExp(`\\b(${customNotAllowed.join("|")})\\b`, "i") 
+            : nullRegExp;
+        
+        // Allow Regex: Matches if ANY allowed word is present
+        const allowRegExp = allowLength 
+            ? new RegExp(`\\b(${customAllowed.join("|")})\\b`, "i") 
+            : nullRegExp;
+        
+        return { denyRegExp, allowRegExp, denyLength, allowLength };
     }
 
     const chkGMreset = document.createElement('input');
@@ -105,15 +103,15 @@
      * @param {boolean} reset - Reset the value with the new array.
      */
     async function updateArrayToStorage(storageKey, newItemsArray, key = "packageId", customFilterKeywords = [], reset = false) {
-		
+        
         if ( reset ) {
-			console.log(`Resetting ${storageKey} Value:`, newItemsArray)
-			return await GM.setValue(storageKey, JSON.stringify(newItemsArray));
-		}
-		
+            console.log(`Resetting ${storageKey} Value:`, newItemsArray)
+            return await GM.setValue(storageKey, JSON.stringify(newItemsArray));
+        }
+        
         // 1. GET (Async): Doesn't block the UI while fetching data
         const jsonString = await GM.getValue(storageKey, "[]");
-		const parsedString = JSON.parse(jsonString);
+        const parsedString = JSON.parse(jsonString);
         // let currentList = [];
         // try {
         //     currentList = parsedString;
@@ -121,19 +119,19 @@
         // } catch (e) {
         //     currentList = [];
         // }
-		const currentList = Array.isArray(parsedString) ? parsedString : [];
-		
-		const customFilter = Array.isArray(customFilterKeywords) ? customFilterKeywords : [];
-		if ( customFilterKeywords.length > 0 ){
-			const filter = customRegExp(customFilter);
-			let i = 0;
-			while ( i < currentList.length ) {
-				const iString = JSON.stringify(currentList[i])
-				if ( iString.match(filter.denyRegExp) ) {
-					currentList.splice(i,1);
-				} else i++;
-			}
-		}
+        const currentList = Array.isArray(parsedString) ? parsedString : [];
+        
+        const customFilter = Array.isArray(customFilterKeywords) ? customFilterKeywords : [];
+        if ( customFilterKeywords.length > 0 ){
+            const filter = customRegExp(customFilter);
+            let i = 0;
+            while ( i < currentList.length ) {
+                const iString = JSON.stringify(currentList[i])
+                if ( iString.match(filter.denyRegExp) ) {
+                    currentList.splice(i,1);
+                } else i++;
+            }
+        }
 
         // 2. OPTIMIZED MERGE (Map based on packageId)
         // This runs in O(N) time and is much faster than stringifying objects.
@@ -239,7 +237,7 @@
         }
     }
     const timer = new SleepTimer();
-	let hasError21 = false;
+    let hasError21 = false;
     
     if ( location.host.match('store.steampowered.com') ) { ////////////////////////////////////////////////////////////////////////////////////////////////////
         const btn = document.createElement('button');
@@ -309,7 +307,7 @@
                             statusDiv.append(`\n❌ Cleaning stopped by user! \n`);
                         } else if ( hasError21 ) {
                             statusDiv.append(`\n❌ Cleaning stopped. Reload page. \n`);
-						} else {
+                        } else {
                             statusDiv.append('\n✨ Completed！\n');
                             // btn.disabled = false;
                             sch.hidden = false;
@@ -375,7 +373,7 @@
                     margin-right: 5px;
                     border-radius: 4px;
                     font-weight: bold;
-					margin: 5px;
+                    margin: 5px;
                 }
                 .cleaningButton {
                     background-color: #FFD700;
@@ -388,15 +386,15 @@
                     background-color: #FFD7AF;
                     cursor: text;
                     flex-grow: 1;
-					min-width: 264px;
+                    min-width: 264px;
                 }
-				#cleaningDiv {
-					display: flex;
-					flex-wrap: wrap;
-					width: 100%;
-					overflow-x: auto;
-					gap: 5px;
-				}
+                #cleaningDiv {
+                    display: flex;
+                    flex-wrap: wrap;
+                    width: 100%;
+                    overflow-x: auto;
+                    gap: 5px;
+                }
                 #cleaningStatus {
                     border: 1px solid #ccc;
                     padding: 10px;
@@ -447,12 +445,12 @@
                     const packageId = match ? match[1] : null;
                     const isCustomAllowed = itemName.trim().search(customFilter.allowRegExp) > -1;
                     const isCustomNotAllowed = itemName.trim().search(customFilter.denyRegExp) > -1;
-					const isCustom = ( ( customFilter.denyLength > 0 ) && ( customFilter.allowLength === 0 ) ) 
-						? true
-						: isCustomAllowed;
+                    const isCustom = ( ( customFilter.denyLength > 0 ) && ( customFilter.allowLength === 0 ) ) 
+                        ? true
+                        : isCustomAllowed;
                     const isDemo = itemName.trim().search(demoRegexp) > -1; // /(\s|\()(demo|prologue)(?![a-z])/i
-					const demoCheck = !customOnly && ( noDemo || isDemo );
-					const packageCheck = !isCustomNotAllowed && ( demoCheck || isCustom );
+                    const demoCheck = !customOnly && ( noDemo || isDemo );
+                    const packageCheck = !isCustomNotAllowed && ( demoCheck || isCustom );
                     if ( packageId && ( packageCheck ) ) {
                         row.id = packageId;
                         games.push({
@@ -938,7 +936,7 @@
                 btn.disabled = false;
                 return;
             }
-			
+            
             let hasError84 = false; 
             let avgCount = 1;
             let avgSum = 0;
@@ -1055,13 +1053,13 @@
                     const isRemoved = removedIds.has(id.trim());
                     const isCustomAllowed = name.trim().search(customFilter.allowRegExp) > -1;
                     const isCustomNotAllowed = name.trim().search(customFilter.denyRegExp) > -1;
-					const isCustom = ( ( customFilter.denyLength > 0 ) && ( customFilter.allowLength === 0 ) ) 
-						? true
-						: isCustomAllowed;
+                    const isCustom = ( ( customFilter.denyLength > 0 ) && ( customFilter.allowLength === 0 ) ) 
+                        ? true
+                        : isCustomAllowed;
                     const isDemo = name.trim().search(demoRegexp) > -1; // /(\s|\()(demo|prologue)(?![a-z])/i
-					// const demoCheck = !customOnly && ( noDemo || isDemo );
-					const packageCheck = !isCustomNotAllowed && ( isRemoved || isDemo || isCustom );
-					
+                    // const demoCheck = !customOnly && ( noDemo || isDemo );
+                    const packageCheck = !isCustomNotAllowed && ( isRemoved || isDemo || isCustom );
+                    
                     if ( packageCheck ) {
                         games.push({
                             id,
@@ -1074,50 +1072,50 @@
             return games;
         }
         const noDemoButton = document.createElement("button");
-		noDemoButton.id = "ignoreDemos";
-		noDemoButton.className = 'btn btn-primary';
-		noDemoButton.append('Ignore all Demo packages');
-		
-		// 1. Create a new style element
-		const ignoreStyle = document.createElement("style");
-		
-		// 2. Define the rule
-		ignoreStyle.textContent = `
-			.btn.btn-primary {
-				margin-bottom: 2px;
-			}
-		`;
-		
-		// 3. Append it to the document head
-		document.head.appendChild(ignoreStyle);
+        noDemoButton.id = "ignoreDemos";
+        noDemoButton.className = 'btn btn-primary';
+        noDemoButton.append('Ignore all Demo packages');
+        
+        // 1. Create a new style element
+        const ignoreStyle = document.createElement("style");
+        
+        // 2. Define the rule
+        ignoreStyle.textContent = `
+            .btn.btn-primary {
+                margin-bottom: 2px;
+            }
+        `;
+        
+        // 3. Append it to the document head
+        document.head.appendChild(ignoreStyle);
 
-		window.onload = async (ev) => {
-			console.log("Starting button insertion:", ev);
-			const activateButton = document.querySelector("#js-activate-now");
-			if ( activateButton ) {
-				if ( !document.querySelector("#ignoreDemos") ) {
-					console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
-					activateButton.parentElement.append(noDemoButton);
-					noDemoButton.addEventListener('click', async () => {
-						const originalText = noDemoButton.textContent;
-						const games2remove = JSON.parse(await GM.getValue("games2remove", "[]"));
-						noDemoButton.disabled = true;
-						noDemoButton.textContent = `Ignoring Demo Titles...`;
-						const titles = await ignoreDemoTitles(games2remove);
-						console.log("Ignored Titles:", titles);
-						noDemoButton.disabled = false;
-						noDemoButton.textContent = originalText;
-					}, { capture: true });
-				}
-			}
-		}
-		
-		const observer = new MutationObserver( async (mutationsList) => {
-			for (const mutation of mutationsList) {
-				window.onload();
-			}
-		});
-		const obConfig = { childList: true, subtree: true };
-		observer.observe(document.body, obConfig);
+        window.onload = async (ev) => {
+            console.log("Starting button insertion:", ev);
+            const activateButton = document.querySelector("#js-activate-now");
+            if ( activateButton ) {
+                if ( !document.querySelector("#ignoreDemos") ) {
+                    console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
+                    activateButton.parentElement.append(noDemoButton);
+                    noDemoButton.addEventListener('click', async () => {
+                        const originalText = noDemoButton.textContent;
+                        const games2remove = JSON.parse(await GM.getValue("games2remove", "[]"));
+                        noDemoButton.disabled = true;
+                        noDemoButton.textContent = `Ignoring Demo Titles...`;
+                        const titles = await ignoreDemoTitles(games2remove);
+                        console.log("Ignored Titles:", titles);
+                        noDemoButton.disabled = false;
+                        noDemoButton.textContent = originalText;
+                    }, { capture: true });
+                }
+            }
+        }
+        
+        const observer = new MutationObserver( async (mutationsList) => {
+            for (const mutation of mutationsList) {
+                window.onload();
+            }
+        });
+        const obConfig = { childList: true, subtree: true };
+        observer.observe(document.body, obConfig);
     }
 })();
