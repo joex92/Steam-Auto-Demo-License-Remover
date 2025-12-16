@@ -1055,12 +1055,12 @@
                     const isRemoved = removedIds.has(id.trim());
                     const isCustomAllowed = name.trim().search(customFilter.allowRegExp) > -1;
                     const isCustomNotAllowed = name.trim().search(customFilter.denyRegExp) > -1;
-					const customCheck = ( ( customFilter.denyLength > 0 ) && ( customFilter.allowLength === 0 ) ) 
+					const isCustom = ( ( customFilter.denyLength > 0 ) && ( customFilter.allowLength === 0 ) ) 
 						? true
 						: isCustomAllowed;
                     const isDemo = name.trim().search(demoRegexp) > -1; // /(\s|\()(demo|prologue)(?![a-z])/i
-					const demoCheck = !customOnly && ( noDemo || isDemo );
-					const packageCheck = !isCustomNotAllowed && ( isRemoved || demoCheck || customCheck );
+					// const demoCheck = !customOnly && ( noDemo || isDemo );
+					const packageCheck = !isCustomNotAllowed && ( isRemoved || isDemo || isCustom );
 					
                     if ( packageCheck ) {
                         games.push({
