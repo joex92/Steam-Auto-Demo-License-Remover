@@ -68,7 +68,7 @@
                 customAllowed.push(term);
             }
         });
-        const hasNegation = ( customNotAllowed.length > 0 ); // && ( customAllowed.length == 0 );
+        const hasNegation = ( customNotAllowed.length > 0 ) && ( customAllowed.length == 0 );
         const customPattern = ( customNotAllowed.length || customAllowed.length ) ? 
             `^${ customNotAllowed.length ? 
                 ( `(?!.*\\b(${customNotAllowed.join("|")})\\b)` ) : 
