@@ -56,11 +56,12 @@
     const demoRegexp = new RegExp(demoPattern, "i");
 
     function customRegExp(customKeywords = []) {
-        if (!Array.isArray(customKeywords)) return { regExp: new RegExp(`(?!)`, "i"), hasNegation: false, negationOnly: false};
+		const nullRegExp = new RegExp(`(?!)`, "i");
+		if (!Array.isArray(customKeywords)) return { denyRegExp: nullRegExp, allowRegExp: nullRegExp, denyLength: 0, allowLength: 0 };
     
         const customAllowed = [];
         const customNotAllowed = [];
-        // 2. Sort terms
+        // Sort terms
         customKeywords.forEach(term => {
             if (term.startsWith("-")) {
                 customNotAllowed.push(term.substring(1));
@@ -68,17 +69,23 @@
                 customAllowed.push(term);
             }
         });
-        const hasNegation = ( customNotAllowed.length > 0 );
-        const negationOnly = ( customNotAllowed.length > 0 ) && ( customAllowed.length == 0 );
-        const customPattern = ( customNotAllowed.length || customAllowed.length ) ? 
-            `^${ customNotAllowed.length ? 
-                ( `(?!.*\\b(${customNotAllowed.join("|")})\\b)` ) : 
-                "" }(?=.*${customAllowed.length ? 
-                           (`\\b(${customAllowed.join("|")})\\b` ) : 
-                           ""})` : 
-            `(?!)` ;
-        const regExp = new RegExp(customPattern, "i");
-        return {regExp, hasNegation, negationOnly}
+
+		const allowLength = customAllowed.length;
+		const denyLength = customNotAllowed.length;
+		
+		// Veto Regex: Matches if ANY forbidden word is present
+		const denyRegExp = denyLength 
+			? new RegExp(`\\b(${customNotAllowed.join("|")})\\b`, "i") 
+			: nullRegExp;
+		
+		// Allow Regex: Matches if ANY allowed word is present
+		// Note: If you want "ALL" words to match, use lookaheads. 
+		// Based on your previous code (join "|"), you seem to want "ANY" match.
+		const allowRegExp = allowLength 
+			? new RegExp(`\\b(${customAllowed.join("|")})\\b`, "i") 
+			: nullRegExp;
+		
+		return { denyRegExp, allowRegExp, denyLength, allowLength };
     }
 
     const chkGMreset = document.createElement('input');
@@ -121,12 +128,10 @@
 			const filter = customRegExp(customFilter);
 			let i = 0;
 			while ( i < currentList.length ) {
-				if ( filter.negationOnly ) {
-					const iString = JSON.stringify(currentList[i])
-					if ( !iString.match(filter.regExp) ) {
-						currentList.splice(i,1);
-					} else i++;
-				} else break;
+				const iString = JSON.stringify(currentList[i])
+				if ( iString.match(filter.denyRegExp) ) {
+					currentList.splice(i,1);
+				} else i++;
 			}
 		}
 
@@ -440,15 +445,14 @@
                     const href = removeLink.getAttribute('href');
                     const match = href.match(/RemoveFreeLicense\(\s*(\d+)\s*,/);
                     const packageId = match ? match[1] : null;
-                    const isCustom = itemName.trim().search(customFilter.regExp) > -1;
+                    const isCustomAllowed = itemName.trim().search(customFilter.allowRegExp) > -1;
+                    const isCustomNotAllowed = itemName.trim().search(customFilter.denyRegExp) > -1;
+					const isCustom = ( ( customFilter.denyLength > 0 ) && ( customFilter.allowLength === 0 ) ) 
+						? true
+						: isCustomAllowed;
                     const isDemo = itemName.trim().search(demoRegexp) > -1; // /(\s|\()(demo|prologue)(?![a-z])/i
-
 					const demoCheck = !customOnly && ( noDemo || isDemo );
-					const packageCheck = ( customFilter.hasNegation && !customOnly ) 
-						? ( ( customFilter.negationOnly )
-						   ? ( demoCheck && isCustom ) 
-						   : ( demoCheck || isCustom ) )
-						: ( demoCheck || isCustom );
+					const packageCheck = !isCustomNotAllowed && ( demoCheck || isCustom );
                     if ( packageId && ( packageCheck ) ) {
                         row.id = packageId;
                         games.push({
@@ -1049,9 +1053,16 @@
                     const name = p.childNodes[p.childNodes.length-1].textContent;
                     const id = packageId.textContent;
                     const isRemoved = removedIds.has(id.trim());
-                    const isCustom = name.trim().search(customFilter.regExp) > -1;
-                    const isDemo = name.trim().search(demoRegexp) > -1;
-                    if ( ( isDemo || isRemoved ) && ( isCustom || !customFilter.hasNegation ) ) {
+                    const isCustomAllowed = name.trim().search(customFilter.allowRegExp) > -1;
+                    const isCustomNotAllowed = name.trim().search(customFilter.denyRegExp) > -1;
+					const customCheck = ( ( customFilter.denyLength > 0 ) && ( customFilter.allowLength === 0 ) ) 
+						? true
+						: isCustomAllowed;
+                    const isDemo = name.trim().search(demoRegexp) > -1; // /(\s|\()(demo|prologue)(?![a-z])/i
+					const demoCheck = !customOnly && ( noDemo || isDemo );
+					const packageCheck = !isCustomNotAllowed && ( isRemoved || demoCheck || customCheck );
+					
+                    if ( packageCheck ) {
                         games.push({
                             id,
                             name
