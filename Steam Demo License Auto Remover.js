@@ -325,7 +325,6 @@
                             skipbtn.hidden = true;
                         }
                         btn.textContent = '🧹 Start cleaning';
-                        statusDiv.scrollTop = statusDiv.scrollHeight;
                     });
                 } else {
                     if ( timer.stop() ) {
@@ -995,7 +994,6 @@
                 }
     
                 statusDiv.append(`Removed：${i} / ${total} (${((i / total)*100).toFixed(2)}%)\n`);
-                statusDiv.scrollTop = statusDiv.scrollHeight;
     
                 if ( i < total && !hasError21 ) {
                     delay = hasError84 ? Math.max( Math.pow( randomDelay( 390000, 510000 ), 1 / ( 1 + ( ( retries - 1 ) / 10 ) ) ), randomDelay( 30000, 90000 ) ) : randomDelay( 500, 1500 );
@@ -1007,7 +1005,6 @@
                     const remainingDays = (remainingHours / 24).toFixed(2);
                     statusDiv.append(`Estimated remaining time：${remainingMinutes} minute(s) ≈ ${remainingHours} hour(s) ≈ ${remainingDays} day(s)\n\n`);
                     statusDiv.append(`⏳ Waiting ${(delay/1000).toFixed(2)} seconds before continuing...\n\n`);
-                    statusDiv.scrollTop = statusDiv.scrollHeight;
                     await timer.start(delay);
                     if ( timer.wasStopped ) { 
                         if ( pkgOpt.retry ) pkgOpt.retry = false;
