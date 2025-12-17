@@ -292,6 +292,14 @@
             const statusDiv = document.createElement('pre');
             statusDiv.hidden = true;
             statusDiv.id = "cleaningStatus";
+        
+            const observer = new MutationObserver( async (mutationsList) => {
+                for (const mutation of mutationsList) {
+                    statusDiv.scrollTop = statusDiv.scrollHeight;
+                }
+            });
+            const obConfig = { childList: true, subtree: true };
+            observer.observe(statusDiv, obConfig);
     
             btn.addEventListener('click', () => {
                 statusDiv.hidden = false;
@@ -1090,10 +1098,10 @@
         document.head.appendChild(ignoreStyle);
 
         window.onload = async (ev) => {
-            console.log("Starting button insertion:", ev);
             const activateButton = document.querySelector("#js-activate-now");
             if ( activateButton ) {
                 if ( !document.querySelector("#ignoreDemos") ) {
+                    console.log("Starting button insertion:", ev);
                     console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
                     activateButton.parentElement.append(noDemoButton);
                     noDemoButton.addEventListener('click', async () => {
