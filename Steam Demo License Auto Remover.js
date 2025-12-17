@@ -458,7 +458,7 @@
                         : isCustomAllowed;
                     const isDemo = itemName.trim().search(demoRegexp) > -1; // /(\s|\()(demo|prologue)(?![a-z])/i
                     const demoCheck = !customOnly && ( noDemo || isDemo );
-                    const packageCheck = !isCustomNotAllowed && ( demoCheck || isCustom );
+                    const packageCheck = ( !isCustomNotAllowed || isCustom ) && ( demoCheck );
                     if ( packageId && ( packageCheck ) ) {
                         row.id = packageId;
                         games.push({
@@ -1066,7 +1066,7 @@
                         : isCustomAllowed;
                     const isDemo = name.trim().search(demoRegexp) > -1; // /(\s|\()(demo|prologue)(?![a-z])/i
                     // const demoCheck = !customOnly && ( noDemo || isDemo );
-                    const packageCheck = !isCustomNotAllowed && ( isRemoved || isDemo || isCustom );
+                    const packageCheck = ( !isCustomNotAllowed || isCustom ) && ( isRemoved || isDemo );
                     
                     if ( packageCheck ) {
                         games.push({
