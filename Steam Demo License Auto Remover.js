@@ -127,7 +127,7 @@
             let i = 0;
             while ( i < currentList.length ) {
                 const iString = JSON.stringify(currentList[i])
-                if ( iString.match(filter.denyRegExp) ) {
+                if ( iString.match(filter.denyRegExp) && !iString.match(filter.allowRegExp) ) {
                     currentList.splice(i,1);
                 } else i++;
             }
