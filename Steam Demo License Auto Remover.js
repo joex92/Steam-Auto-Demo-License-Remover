@@ -64,23 +64,25 @@
         // Sort terms
         customKeywords.forEach(term => {
             if (term.startsWith("-")) {
-                customNotAllowed.push(term.substring(1));
+                customNotAllowed.push(term.substring(1).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
             } else {
-                customAllowed.push(term);
+                customAllowed.push(term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
             }
         });
 
         const allowLength = customAllowed.length;
         const denyLength = customNotAllowed.length;
         
+        const boundaryStart = `(^|[^\\w\\u00C0-\\uFFFF])`;
+        const boundaryEnd   = `([^\\w\\u00C0-\\uFFFF]|$)`;
         // Veto Regex: Matches if ANY forbidden word is present
         const denyRegExp = denyLength 
-            ? new RegExp(`\\b(${customNotAllowed.join("|")})\\b`, "i") 
+            ? new RegExp(`${boundaryStart}(${customNotAllowed.join("|")})${boundaryEnd}`, "i") 
             : nullRegExp;
         
         // Allow Regex: Matches if ANY allowed word is present
         const allowRegExp = allowLength 
-            ? new RegExp(`\\b(${customAllowed.join("|")})\\b`, "i") 
+            ? new RegExp(`${boundaryStart}(${customAllowed.join("|")})${boundaryEnd}`, "i") 
             : nullRegExp;
         
         return { denyRegExp, allowRegExp, denyLength, allowLength };
