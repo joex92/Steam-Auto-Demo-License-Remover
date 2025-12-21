@@ -1126,9 +1126,9 @@
                     if ( childNode.textContent.match(problemRegExp) ) {
                         console.log(updateArrayToStorage("gamesIgnored", [{packageId: childNode.querySelector(".package").textContent.trim()}], "packageId", [], false));
                         childNode.childNodes.forEach( (n) => {
-                            const igngMessage = " <b>Ignoring Package...</b>"
+                            const igngMessage = " Ignoring Package..."
                             if ( !n.textContent.match(igngMessage) && n.textContent.match(problemRegExp) ) {
-                                n.innerHTML += igngMessage;
+                                n.textContent += igngMessage;
                             }
                         });
                         childNode.querySelector(".js-remove").click();
