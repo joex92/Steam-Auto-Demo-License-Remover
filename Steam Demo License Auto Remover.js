@@ -1163,6 +1163,8 @@
             if ( !container ) {
                 console.log("Starting button insertion:", ev);
                 console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
+                const freePackagesContainer = document.querySelector('freepackages');
+                if ( freePackagesContainer ) noDemoButton.hidden = freePackagesContainer.hidden;
                 document.querySelector("#loading").insertAdjacentElement("afterend",ignoreContainer);
                 noDemoButton.addEventListener('click', async () => {
                     const originalText = noDemoButton.textContent;
