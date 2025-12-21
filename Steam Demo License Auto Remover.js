@@ -1195,9 +1195,11 @@
                         }
                     }
                 }
+                const freePackagesContainer = document.querySelector("freepackages");
+                if ( freePackagesContainer ) noDemoButton.hidden = freePackagesContainer.hidden;
             }
         });
-        const obConfig = { childList: true, subtree: true };
+        const obConfig = { childList: true, subtree: true, attributes: true, characterData: true };
         observer.observe(document.body, obConfig);
     }
 })();
