@@ -1096,7 +1096,7 @@
         probchk.style.pointerEvents = 'none';
 
         noProblembButton.append(probchk);
-        noProblembButton.append('Ignore: There was a problem adding this product…'';
+        noProblembButton.append(`Ignore: There was a problem adding this product…`);
         noProblembButton.addEventListener('click', async () => {
             probchk.checked = !probchk.checked;
             const probPackages = JSON.parse(await GM.getValue("gamesIgnored", "[]"));
