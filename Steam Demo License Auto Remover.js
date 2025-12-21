@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      6.6.6.6.6
+// @version      6.6.6.6.6.6
 // @description  This is an English Translated version from the original by PeiqiLi. Plus the addition of removing demo titles only as well as auto ignore the removed games in the steamDB free packages script page.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -1096,7 +1096,7 @@
         probchk.style.pointerEvents = 'none';
 
         noProblembButton.append(probchk);
-        noProblembButton.append('Auto-Ignore problematic packages');
+        noProblembButton.append('Ignore: There was a problem adding this product');
         noProblembButton.addEventListener('click', async () => {
             probchk.checked = !probchk.checked;
             const probPackages = JSON.parse(await GM.getValue("gamesIgnored", "[]"));
