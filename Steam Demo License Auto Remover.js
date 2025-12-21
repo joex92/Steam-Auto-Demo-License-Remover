@@ -1099,9 +1099,9 @@
         noProblembButton.append('Auto-Ignore problematic packages');
         noProblembButton.addEventListener('click', async () => {
             probchk.checked = !probchk.checked;
+            const probPackages = JSON.parse(await GM.getValue("gamesIgnored", "[]"));
             if ( !probchk.checked ) {
                 const ignoredPackages = document.querySelectorAll("#js-ignored-packages > button");
-                const probPackages = JSON.parse(await GM.getValue("gamesIgnored", "[]"));
                 ignoredPackages.forEach( (i) => {
                     probPackages.forEach( (p) => {
                         if ( i.textContent.match(p.packageId) ) i.click();
@@ -1109,6 +1109,13 @@
                 });
                 let userResponse = confirm("Reload the page?");
                 if (userResponse) location.reload();
+            } else {
+                const packages = document.querySelectorAll('.package');
+                packages.forEach( (p) => {
+                    probPackages.forEach( (p) => {
+                        if ( p.textContent.match(p.packageId) ) p.querySelector("js-remove").click();
+                    });
+                });
             }
         });
         
