@@ -1080,12 +1080,12 @@
         }
         const noDemoButton = document.createElement("button");
         noDemoButton.id = "ignoreDemos";
-        noDemoButton.className = 'btn btn-primary';
+        noDemoButton.className = 'btn btn-primary ignoreBtn';
         noDemoButton.append('Ignore all Demo packages');
         
         const noProblembButton = document.createElement("button");
         noProblembButton.id = "autoIgnorePPackages";
-        noProblembButton.className = 'btn btn-primary';
+        noProblembButton.className = 'btn btn-primary ignoreBtn';
 
         const probchk = document.createElement('input');
         probchk.id = 'resetGMvar';
@@ -1119,15 +1119,30 @@
                 });
             }
         });
+
+        const ignoreContainer = document.createElement("div");
+        ignoreContainer.id = "ignoreContainer";
+        ignoreContainer.className = "panel";
+        ignoreContainer.append(chkGMreset);
+        ignoreContainer.append(noDemoButton);
+        ignoreContainer.append(noProblembButton);
         
         // 1. Create a new style element
         const ignoreStyle = document.createElement("style");
         
         // 2. Define the rule
         ignoreStyle.textContent = `
-            .btn.btn-primary {
-                margin-bottom: 2px;
-                margin-right: 2px;
+            .ignoreBtn {
+                flex-shrink: 0;
+                white-space: nowrap;
+                flex-grow: 1;
+            }
+            #${ignoreContainer.id} {
+                display: flex;
+                flex-wrap: wrap;
+                width: 100%;
+                overflow-x: auto;
+                gap: 5px;
             }
         `;
         
@@ -1135,29 +1150,30 @@
         document.head.appendChild(ignoreStyle);
 
         let ignoredCounter = 0;
+        let buttonSet = false;
         window.onload = async (ev) => {
             const activateButton = document.querySelector("#js-activate-now");
-            if ( activateButton ) {
-                if ( !document.querySelector("#ignoreDemos") ) {
-                    console.log("Starting button insertion:", ev);
-                    console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
-                    activateButton.parentElement.append(noDemoButton);
-                    activateButton.parentElement.append(noProblembButton);
-                    activateButton.parentElement.append(chkGMreset);
-                    noDemoButton.addEventListener('click', async () => {
-                        const originalText = noDemoButton.textContent;
-                        const games2remove = JSON.parse(await GM.getValue("games2remove", "[]"));
-                        noDemoButton.disabled = true;
-                        noDemoButton.textContent = `Ignoring Demo Titles...`;
-                        const titles = await ignoreDemoTitles(games2remove);
-                        console.log("Ignored Titles:", titles);
-                        noDemoButton.disabled = false;
-                        noDemoButton.textContent = originalText;
-                    });
-                    activateButton.addEventListener('click', async () => {
-                        ignoredCounter = 0;
-                    }, { capture: true });
-                }
+            if ( activateButton && !buttonSet ){
+                activateButton.addEventListener('click', async () => {
+                    ignoredCounter = 0;
+                }, { capture: true });
+                buttonSet = true;
+            }
+            const container = document.querySelector(`#${ignoreContainer.id}`);
+            if ( !container ) {
+                console.log("Starting button insertion:", ev);
+                console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
+                document.querySelector("#loading").insertAdjacentElement("afterend",ignoreContainer);
+                noDemoButton.addEventListener('click', async () => {
+                    const originalText = noDemoButton.textContent;
+                    const games2remove = JSON.parse(await GM.getValue("games2remove", "[]"));
+                    noDemoButton.disabled = true;
+                    noDemoButton.textContent = `Ignoring Demo Titles...`;
+                    const titles = await ignoreDemoTitles(games2remove);
+                    console.log("Ignored Titles:", titles);
+                    noDemoButton.disabled = false;
+                    noDemoButton.textContent = originalText;
+                });
             }
         }
         const observer = new MutationObserver( async (mutationsList) => {
