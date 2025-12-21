@@ -1102,9 +1102,9 @@
             if ( !probchk.checked ) {
                 const ignoredPackages = document.querySelectorAll("#js-ignored-packages > button");
                 const probPackages = await GM.getValue("games2remove", "[]");
-                ignoredPackages.forEach( (let i) => {
-                    probPackages.forEach( (let p) => {
-                        if (i.textContent.match(p.packageId) i.click();
+                ignoredPackages.forEach( (i) => {
+                    probPackages.forEach( (p) => {
+                        if ( i.textContent.match(p.packageId) ) i.click();
                     });
                 });
             }
