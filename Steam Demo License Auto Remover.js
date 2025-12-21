@@ -1119,9 +1119,7 @@
         ignoreStyle.textContent = `
             .btn.btn-primary {
                 margin-bottom: 2px;
-            }
-            .ignore-pointer {
-            
+                margin-right: 2px;
             }
         `;
         
