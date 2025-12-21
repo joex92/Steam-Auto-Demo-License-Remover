@@ -1179,27 +1179,36 @@
         const observer = new MutationObserver( async (mutationsList) => {
             for (const mutation of mutationsList) {
                 window.onload();
-                if ( probchk.checked ) {
-                    const childNode = mutation.addedNodes[0];
-                    if ( childNode && childNode.classList && childNode.classList.contains("tabular-nums") ) {
-                        const problemRegExp = /There was a problem adding this product/i;
-                        if ( childNode.textContent.match(problemRegExp) ) {
-                            console.log(updateArrayToStorage("gamesIgnored", [{packageId: childNode.querySelector(".package").textContent.trim(), message: childNode.textContent.split("[Ignore]")[1].trim()}], "packageId", [], chkGMreset.checked && !ignoredCounter++ ));
-                            childNode.childNodes.forEach( (n) => {
-                                const igngMessage = " Auto-ignoring package..."
-                                if ( !n.textContent.match(igngMessage) && n.textContent.match(problemRegExp) ) {
-                                    n.textContent += igngMessage;
+                switch (mutation.type) {
+                        // --- CASE 1: ATTRIBUTE CHANGED ---
+                        case 'attributes':
+                            const freePackagesContainer = document.querySelector("freepackages");
+                            if ( freePackagesContainer ) noDemoButton.hidden = freePackagesContainer.hidden;
+                            break;
+
+                        // --- CASE 2: NEW NODES ADDED ---
+                        case 'childList':
+                            if ( probchk.checked ) {
+                                const childNode = mutation.addedNodes[0];
+                                if ( childNode && childNode.classList && childNode.classList.contains("tabular-nums") ) {
+                                    const problemRegExp = /There was a problem adding this product/i;
+                                    if ( childNode.textContent.match(problemRegExp) ) {
+                                        console.log(updateArrayToStorage("gamesIgnored", [{packageId: childNode.querySelector(".package").textContent.trim(), message: childNode.textContent.split("[Ignore]")[1].trim()}], "packageId", [], chkGMreset.checked && !ignoredCounter++ ));
+                                        childNode.childNodes.forEach( (n) => {
+                                            const igngMessage = " Auto-ignoring package..."
+                                            if ( !n.textContent.match(igngMessage) && n.textContent.match(problemRegExp) ) {
+                                                n.textContent += igngMessage;
+                                            }
+                                        });
+                                        childNode.querySelector(".js-remove").click();
+                                    }
                                 }
-                            });
-                            childNode.querySelector(".js-remove").click();
-                        }
-                    }
+                            }
+                            break;
                 }
-                const freePackagesContainer = document.querySelector("freepackages");
-                if ( freePackagesContainer ) noDemoButton.hidden = freePackagesContainer.hidden;
             }
         });
-        const obConfig = { childList: true, subtree: true, attributes: true, characterData: true };
+        const obConfig = { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] };
         observer.observe(document.body, obConfig);
     }
 })();
