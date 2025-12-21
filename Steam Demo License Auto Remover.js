@@ -1119,6 +1119,7 @@
         
         const observer = new MutationObserver( async (mutationsList) => {
             for (const mutation of mutationsList) {
+                console.log(mutation);
                 window.onload();
             }
         });
