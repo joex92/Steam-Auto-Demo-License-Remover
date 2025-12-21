@@ -1114,7 +1114,7 @@
                 const packages = document.querySelectorAll('.package');
                 packages.forEach( (p) => {
                     probPackages.forEach( (prob) => {
-                        if ( p.textContent.match(prob.packageId) ) p.querySelector("js-remove").click();
+                        if ( p.textContent.match(prob.packageId) ) p.querySelector(".js-remove").click();
                     });
                 });
             }
