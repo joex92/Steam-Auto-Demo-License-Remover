@@ -1107,6 +1107,8 @@
                         if ( i.textContent.match(p.packageId) ) i.click();
                     });
                 });
+                let userResponse = confirm("Reload the page?");
+                if (userResponse) location.reload();
             }
         });
         
