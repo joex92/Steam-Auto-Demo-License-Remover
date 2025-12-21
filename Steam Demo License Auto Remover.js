@@ -1107,10 +1107,10 @@
                         if ( i.textContent.match(p.packageId) ) i.click();
                     });
                 });
-                let userResponse = confirm(
-                    `Packages restored.
-                    Reload?`
-                );
+                let userResponse = confirm(`
+                    Packages restored.
+                    Reload now?
+                `);
                 if (userResponse) location.reload();
                 else console.log("Ignored packages:", probPackages);
             } else {
