@@ -1083,6 +1083,33 @@
         noDemoButton.className = 'btn btn-primary';
         noDemoButton.append('Ignore all Demo packages');
         
+        const noProblembButton = document.createElement("button");
+        noProblembButton.id = "autoIgnorePPackages";
+        noProblembButton.className = 'btn btn-primary';
+
+        const probchk = document.createElement('input');
+        probchk.id = 'resetGMvar';
+        probchk.type = 'checkbox';
+        probchk.name = 'option';
+        probchk.value = 'selected';
+        probchk.checked = true;
+        probchk.style.pointerEvents = 'none';
+
+        noProblembButton.append(probchk);
+        noProblembButton.append('Auto-Ignore problematic packages');
+        noProblembButton.addEventListener('click', async () => {
+            probchk.checked = !probchk.checked;
+            if ( !probchk.checked ) {
+                const ignoredPackages = document.querySelectorAll("#js-ignored-packages > button");
+                const probPackages = await GM.getValue("games2remove", "[]");
+                ignoredPackages.forEach( (i) => {
+                    probPackages.forEach( (p) => {
+                        if (i.textContent.match(p.packageId) i.click();
+                    });
+                });
+            }
+        });
+        
         // 1. Create a new style element
         const ignoreStyle = document.createElement("style");
         
@@ -1090,6 +1117,9 @@
         ignoreStyle.textContent = `
             .btn.btn-primary {
                 margin-bottom: 2px;
+            }
+            .ignore-pointer {
+            
             }
         `;
         
@@ -1103,6 +1133,7 @@
                     console.log("Starting button insertion:", ev);
                     console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
                     activateButton.parentElement.append(noDemoButton);
+                    activateButton.parentElement.append(noProblembButton);
                     noDemoButton.addEventListener('click', async () => {
                         const originalText = noDemoButton.textContent;
                         const games2remove = JSON.parse(await GM.getValue("games2remove", "[]"));
@@ -1120,18 +1151,20 @@
         const observer = new MutationObserver( async (mutationsList) => {
             for (const mutation of mutationsList) {
                 window.onload();
-                const childNode = mutation.addedNodes[0];
-                if ( childNode && childNode.classList && childNode.classList.contains("tabular-nums") ) {
-                    const problemRegExp = /There was a problem adding this product/i;
-                    if ( childNode.textContent.match(problemRegExp) ) {
-                        console.log(updateArrayToStorage("gamesIgnored", [{packageId: childNode.querySelector(".package").textContent.trim()}], "packageId", [], false));
-                        childNode.childNodes.forEach( (n) => {
-                            const igngMessage = " Auto-ignoring package..."
-                            if ( !n.textContent.match(igngMessage) && n.textContent.match(problemRegExp) ) {
-                                n.textContent += igngMessage;
-                            }
-                        });
-                        childNode.querySelector(".js-remove").click();
+                if ( probchk.checked ) {
+                    const childNode = mutation.addedNodes[0];
+                    if ( childNode && childNode.classList && childNode.classList.contains("tabular-nums") ) {
+                        const problemRegExp = /There was a problem adding this product/i;
+                        if ( childNode.textContent.match(problemRegExp) ) {
+                            console.log(updateArrayToStorage("gamesIgnored", [{packageId: childNode.querySelector(".package").textContent.trim()}], "packageId", [], false));
+                            childNode.childNodes.forEach( (n) => {
+                                const igngMessage = " Auto-ignoring package..."
+                                if ( !n.textContent.match(igngMessage) && n.textContent.match(problemRegExp) ) {
+                                    n.textContent += igngMessage;
+                                }
+                            });
+                            childNode.querySelector(".js-remove").click();
+                        }
                     }
                 }
             }
