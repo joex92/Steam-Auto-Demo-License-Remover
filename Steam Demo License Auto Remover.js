@@ -1156,7 +1156,7 @@
                     if ( childNode && childNode.classList && childNode.classList.contains("tabular-nums") ) {
                         const problemRegExp = /There was a problem adding this product/i;
                         if ( childNode.textContent.match(problemRegExp) ) {
-                            console.log(updateArrayToStorage("gamesIgnored", [{packageId: childNode.querySelector(".package").textContent.trim()}], "packageId", [], false));
+                            console.log(updateArrayToStorage("gamesIgnored", [{packageId: childNode.querySelector(".package").textContent.trim(), message: childNode.tectContent.split(" - ")[1]}], "packageId", [], false));
                             childNode.childNodes.forEach( (n) => {
                                 const igngMessage = " Auto-ignoring package..."
                                 if ( !n.textContent.match(igngMessage) && n.textContent.match(problemRegExp) ) {
