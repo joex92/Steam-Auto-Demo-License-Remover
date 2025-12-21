@@ -1119,8 +1119,14 @@
         
         const observer = new MutationObserver( async (mutationsList) => {
             for (const mutation of mutationsList) {
-                console.log(mutation.addedNodes[0].className);
                 window.onload();
+                const childNode = mutation.addedNodes[0];
+                if ( childNode.className == "tabular-nums" ) {
+                    if ( childNode.textContent.match(/There was a problem adding this product/i) ) {
+                        console.log(updateArrayToStorage("gamesIgnored", [{packageId: childNode.querySelector(".package").textContent.trim()}], "packageId", [], false));
+                        childNode.querySelector(".js-remove").click();
+                    }
+                }
             }
         });
         const obConfig = { childList: true, subtree: true };
