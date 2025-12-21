@@ -1134,6 +1134,7 @@
         // 3. Append it to the document head
         document.head.appendChild(ignoreStyle);
 
+        let ignoredCounter = 0;
         window.onload = async (ev) => {
             const activateButton = document.querySelector("#js-activate-now");
             if ( activateButton ) {
@@ -1142,6 +1143,7 @@
                     console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
                     activateButton.parentElement.append(noDemoButton);
                     activateButton.parentElement.append(noProblembButton);
+                    activateButton.parentElement.append(chkGMreset);
                     noDemoButton.addEventListener('click', async () => {
                         const originalText = noDemoButton.textContent;
                         const games2remove = JSON.parse(await GM.getValue("games2remove", "[]"));
@@ -1151,11 +1153,13 @@
                         console.log("Ignored Titles:", titles);
                         noDemoButton.disabled = false;
                         noDemoButton.textContent = originalText;
+                    });
+                    activateButton.addEventListener('click', async () => {
+                        ignoredCounter = 0;
                     }, { capture: true });
                 }
             }
         }
-        
         const observer = new MutationObserver( async (mutationsList) => {
             for (const mutation of mutationsList) {
                 window.onload();
@@ -1164,7 +1168,7 @@
                     if ( childNode && childNode.classList && childNode.classList.contains("tabular-nums") ) {
                         const problemRegExp = /There was a problem adding this product/i;
                         if ( childNode.textContent.match(problemRegExp) ) {
-                            console.log(updateArrayToStorage("gamesIgnored", [{packageId: childNode.querySelector(".package").textContent.trim(), message: childNode.textContent.trim().split("-")[1]}], "packageId", [], false));
+                            console.log(updateArrayToStorage("gamesIgnored", [{packageId: childNode.querySelector(".package").textContent.trim(), message: childNode.textContent.trim().split("-")[1]}], "packageId", [], chkGMreset.checked && !ignoredCounter++ ));
                             childNode.childNodes.forEach( (n) => {
                                 const igngMessage = " Auto-ignoring package..."
                                 if ( !n.textContent.match(igngMessage) && n.textContent.match(problemRegExp) ) {
