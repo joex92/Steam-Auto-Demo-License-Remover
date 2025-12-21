@@ -1118,6 +1118,7 @@
                     });
                 });
             }
+            updateArrayToStorage("gamesIgnoredChk", [{checked: probchk.checked }], "checked", [], true )
         });
 
         const ignoreContainer = document.createElement("div");
@@ -1165,10 +1166,13 @@
                 console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
                 const freePackagesContainer = document.querySelector('#freepackages');
                 if ( freePackagesContainer ) noDemoButton.hidden = freePackagesContainer.hidden;
+                const probChecked = JSON.parse(await GM.getValue("gamesIgnoredChk", '[{"checked":true}]'));
+                probchk.checked = probChecked[0].checked;
                 document.querySelector("#loading").insertAdjacentElement("afterend",ignoreContainer);
                 noDemoButton.addEventListener('click', async () => {
                     const originalText = noDemoButton.textContent;
                     const games2remove = JSON.parse(await GM.getValue("games2remove", "[]"));
+                    
                     noDemoButton.disabled = true;
                     noDemoButton.textContent = `Ignoring Demo Titles...`;
                     const titles = await ignoreDemoTitles(games2remove);
