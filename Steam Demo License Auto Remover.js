@@ -1119,7 +1119,7 @@
         
         const observer = new MutationObserver( async (mutationsList) => {
             for (const mutation of mutationsList) {
-                console.log(mutation);
+                console.log(mutation.addedNodes[0].className);
                 window.onload();
             }
         });
