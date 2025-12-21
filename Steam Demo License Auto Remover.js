@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      6.6.6
+// @version      6.6.6.6
 // @description  This is an English Translated version from the original by PeiqiLi. Plus the addition of removing demo titles only as well as auto ignore the removed games in the steamDB free packages script page.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -1163,7 +1163,7 @@
             if ( !container ) {
                 console.log("Starting button insertion:", ev);
                 console.log("Removed Games:", JSON.parse(await GM.getValue("games2remove", "[]")));
-                const freePackagesContainer = document.querySelector('freepackages');
+                const freePackagesContainer = document.querySelector('#freepackages');
                 if ( freePackagesContainer ) noDemoButton.hidden = freePackagesContainer.hidden;
                 document.querySelector("#loading").insertAdjacentElement("afterend",ignoreContainer);
                 noDemoButton.addEventListener('click', async () => {
