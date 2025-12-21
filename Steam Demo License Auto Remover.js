@@ -1182,8 +1182,14 @@
                 switch (mutation.type) {
                         // --- CASE 1: ATTRIBUTE CHANGED ---
                         case 'attributes':
-                            const freePackagesContainer = document.querySelector("freepackages");
-                            if ( freePackagesContainer ) noDemoButton.hidden = freePackagesContainer.hidden;
+                            if (mutation.attributeName === 'hidden') {
+                                const targetElement = mutation.target;
+                                if (targetElement.matches('#freepackages')) {
+                                    if (noDemoButton) {
+                                        noDemoButton.hidden = targetElement.hasAttribute('hidden');
+                                    }
+                                }
+                            }
                             break;
 
                         // --- CASE 2: NEW NODES ADDED ---
