@@ -1121,7 +1121,7 @@
             for (const mutation of mutationsList) {
                 window.onload();
                 const childNode = mutation.addedNodes[0];
-                if ( childNode.className === "tabular-nums" ) {
+                if ( childNode.classList && childNode.classList.contains("tabular-nums") ) {
                     if ( childNode.textContent.match(/There was a problem adding this product/i) ) {
                         console.log(updateArrayToStorage("gamesIgnored", [{packageId: childNode.querySelector(".package").textContent.trim()}], "packageId", [], false));
                         childNode.querySelector(".js-remove").click();
