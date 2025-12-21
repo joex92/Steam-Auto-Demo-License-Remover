@@ -1109,11 +1109,12 @@
                 });
                 let userResponse = confirm("Reload the page?");
                 if (userResponse) location.reload();
+                else console.log("Ignored packages:", probPackages);
             } else {
                 const packages = document.querySelectorAll('.package');
                 packages.forEach( (p) => {
-                    probPackages.forEach( (p) => {
-                        if ( p.textContent.match(p.packageId) ) p.querySelector("js-remove").click();
+                    probPackages.forEach( (prob) => {
+                        if ( p.textContent.match(prob.packageId) ) p.querySelector("js-remove").click();
                     });
                 });
             }
