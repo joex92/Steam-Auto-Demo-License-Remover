@@ -1006,7 +1006,7 @@
                     const remainingHours = (remainingMinutes / 60).toFixed(2);
                     const remainingDays = (remainingHours / 24).toFixed(2);
                     statusDiv.append(`Estimated remaining time：${remainingMinutes} minute(s) ≈ ${remainingHours} hour(s) ≈ ${remainingDays} day(s)\n\n`);
-                    statusDiv.append(`⏳ Waiting ${(delay/1000).toFixed(2)} seconds... Continuing at ${new Date(Date.now() + delay).toLocaleTimeString()}.\n\n`);
+                    statusDiv.append(`⏳ Waiting ${(delay/1000).toFixed(2)} seconds... [Continuing at ${new Date(Date.now() + delay).toLocaleTimeString()}]\n\n`);
                     await timer.start(delay);
                     if ( timer.wasStopped ) { 
                         if ( pkgOpt.retry ) pkgOpt.retry = false;
