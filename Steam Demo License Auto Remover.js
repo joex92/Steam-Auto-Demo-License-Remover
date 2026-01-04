@@ -249,7 +249,7 @@
         const gamesIgnoredChk = JSON.parse(await GM.getValue("gamesIgnoredChk", '[{"checked":true}]'));
         const dataObj = {games2remove, customFilter, gamesIgnored, gamesIgnoredChk, timestamp: Date.now()};
         const jsonString = JSON.stringify(dataObj, null, 2);
-        const filename = "SDLAR_export.json";
+        const filename = `SDLAR_export${Date.now()}.json`;
 
         const blob = new Blob([jsonString], { type: "application/json" });
         const url = URL.createObjectURL(blob);
