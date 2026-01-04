@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      7.0
+// @version      7.1
 // @description  This is an English Translated version from the original by PeiqiLi. Plus the addition of removing demo titles only as well as auto ignore the removed games in the steamDB free packages script page.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -285,10 +285,10 @@
                     const importedData = JSON.parse(e.target.result);
 
                     // 4. Save values back to storage
-                    if (importedData.games2remove) await updateArrayToStorage("games2remove", importedData.games2remove, "packageId", [], true);
-                    if (importedData.customFilter) await updateArrayToStorage("customFilter", importedData.customFilter, "length", [], true);
-                    if (importedData.gamesIgnored) await updateArrayToStorage("gamesIgnored", importedData.gamesIgnored, "packageId", [], true ));
-                    if (importedData.gamesIgnoredChk) await updateArrayToStorage("gamesIgnoredChk", importedData.gamesIgnoredChk, "checked", [], true );
+                    if (importedData.games2remove) await updateArrayToStorage( "games2remove", importedData.games2remove, "packageId", [], true );
+                    if (importedData.customFilter) await updateArrayToStorage( "customFilter", importedData.customFilter, "length", [], true );
+                    if (importedData.gamesIgnored) await updateArrayToStorage( "gamesIgnored", importedData.gamesIgnored, "packageId", [], true );
+                    if (importedData.gamesIgnoredChk) await updateArrayToStorage( "gamesIgnoredChk", importedData.gamesIgnoredChk, "checked", [], true );
 
                     alert("Import successful! The page will now reload.");
                     location.reload(); // Reload to apply changes immediately
