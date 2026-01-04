@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      7.1
+// @version      7.2
 // @description  This is an English Translated version from the original by PeiqiLi. Plus the addition of removing demo titles only as well as auto ignore the removed games in the steamDB free packages script page.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -266,7 +266,10 @@
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = '.json';
-        input.style.display = 'none';
+        input.style.position = 'fixed';
+        input.style.top = '-10000px';
+        input.style.left = '-10000px';
+        input.style.opacity = '0';
         document.body.appendChild(input);
 
         // 2. Listen for the file selection
