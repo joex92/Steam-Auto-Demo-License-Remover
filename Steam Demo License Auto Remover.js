@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      7.2
+// @version      7.3
 // @description  This is an English Translated version from the original by PeiqiLi. Plus the addition of removing demo titles only as well as auto ignore the removed games in the steamDB free packages script page.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -383,7 +383,7 @@
                 if ( btn.textContent === '🧹 Start cleaning' ) {
                     btn.disabled = true;
                     sch.hidden = true;
-                    btn.textContent = '⌛ Scanning Titles...';
+                    // btn.textContent = '⌛ Scanning Titles...';
                     chklbl.hidden = true;
                     schchklbl.hidden = true;
                     statusDiv.textContent = '';
@@ -513,6 +513,7 @@
     
         async function scanRemovableGames(noDemo = false, customOnly = false) {
             const rows = document.querySelectorAll('.account_table tr');
+            btn.textContent = `⌛ Scanning ${rows.length} Titles...`;
             const games = [];
             const customKeywords = sch.value.trim() ? sch.value.trim().replace(/^[`'"]|[`'"]$/g, '').split(/\s*['"]?\s*[,，、]\s*['"]?\s*/) : [];
             console.log(await updateArrayToStorage("customFilter", customKeywords, "length", [], true));
