@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         One-Click Steam Demo License Auto Remover
 // @namespace    https://github.com/joex92/Steam-Auto-Demo-License-Remover
-// @version      7.3
+// @version      7.4
 // @description  This is an English Translated version from the original by PeiqiLi. Plus the addition of removing demo titles only as well as auto ignore the removed games in the steamDB free packages script page.
 // @author       PeiqiLi + JoeX92
 // @match        https://store.steampowered.com/account/licenses/
@@ -511,9 +511,7 @@
             return Math.floor(Math.random() * (max - min + 1)) + min;
         }
     
-        async function scanRemovableGames(noDemo = false, customOnly = false) {
-            const rows = document.querySelectorAll('.account_table tr');
-            btn.textContent = `⌛ Scanning ${rows.length} Titles...`;
+        async function scanRemovableGames(rows = document.querySelectorAll('.account_table tr'), noDemo = false, customOnly = false) {
             const games = [];
             const customKeywords = sch.value.trim() ? sch.value.trim().replace(/^[`'"]|[`'"]$/g, '').split(/\s*['"]?\s*[,，、]\s*['"]?\s*/) : [];
             console.log(await updateArrayToStorage("customFilter", customKeywords, "length", [], true));
@@ -1010,14 +1008,16 @@
     
         async function startCleaning(statusDiv) {
             await requestWakeLock();
-            const games = await scanRemovableGames(!chk.checked,schchk.checked);
+            const rows = document.querySelectorAll('.account_table tr');
+            btn.textContent = `⌛ Scanning ${rows.length} Titles...`;
+            const games = await scanRemovableGames(rows,!chk.checked,schchk.checked);
             console.log(await updateArrayToStorage("games2remove", games, "packageId", JSON.parse(await GM.getValue("customFilter", "[]")), chkGMreset.checked));
             const total = games.length;
     
             console.log(`Removing ${total} games:`, games);
     
             if (total === 0) {
-                statusDiv.textContent = '✅ No games found to be removed。';
+                statusDiv.textContent = `✅ ${rows.length} titles scanned. No ${chk.checked ? "demo" : "free"} games found to be removed。`;
                 btn.disabled = false;
                 return;
             }
